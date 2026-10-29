@@ -199,3 +199,4 @@ ES.lines["- more Tibia Coins for being online"] = "- más Tibia Coins por estar 
 table.insert(ES.linePatterns, { "^%- familiar cooldown reduced by (%d+) minutes$", function(n) return "- espera del familiar reducida en " .. n .. " minutos" end })
 table.insert(ES.linePatterns, { "^%- (%d+)%% discount on consumables in the Store$", function(n) return "- " .. n .. "% de descuento en consumibles de la Tienda" end })
 ES.lines["- all Premium benefits (areas, spells, travel, houses, guilds)"] = "- todas las ventajas Premium (zonas, hechizos, viajes, casas, gremios)"
+ES.messages["Twist of Fate is not available on this world."] = "Giro del destino no está disponible en este mundo."

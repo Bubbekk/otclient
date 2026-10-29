@@ -39,6 +39,20 @@ local function esPrice(price)
     return price
 end
 
+-- Las filas tienen alto fijo (78); con nombres de dos líneas y varias ofertas (1x, 5x...)
+-- el contenido se salía de la fila. Se ajusta el alto tras calcular el texto.
+local function fitRowHeight(row, offersCount)
+    local function apply()
+        if not row or row:isDestroyed() then return end
+        local nameLabel = row:getChildById("lblName")
+        local nameHeight = nameLabel and nameLabel:getHeight() or 14
+        local needed = 8 + nameHeight + 12 + offersCount * 25 + 2
+        row:setHeight(math.max(78, needed))
+    end
+    apply()
+    scheduleEvent(apply, 50)
+end
+
 local function esName(text) return esTranslate("name", text) end
 local function esCategory(text) return esTranslate("category", text) end
 local function esMessage(text) return esTranslate("message", text) end
@@ -689,6 +703,7 @@ function onParseStoreCreateProducts(storeProducts)
                 priceLabel:setIcon("/game_store/images/icon-tibiacointransferable")
             end
         end
+        fitRowHeight(row, #subOffers)
         local data = getProductData(product)
         if data then
             createProductImage(row:getChildById('image'), data)
