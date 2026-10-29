@@ -200,3 +200,5 @@ table.insert(ES.linePatterns, { "^%- familiar cooldown reduced by (%d+) minutes$
 table.insert(ES.linePatterns, { "^%- (%d+)%% discount on consumables in the Store$", function(n) return "- " .. n .. "% de descuento en consumibles de la Tienda" end })
 ES.lines["- all Premium benefits (areas, spells, travel, houses, guilds)"] = "- todas las ventajas Premium (zonas, hechizos, viajes, casas, gremios)"
 ES.messages["Twist of Fate is not available on this world."] = "Giro del destino no está disponible en este mundo."
+ES.names["Arctic Unicorn"] = "Unicornio ártico"
+ES.names["Tangerine Flecked Koi"] = "Koi moteado mandarina"
