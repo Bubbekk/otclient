@@ -206,7 +206,7 @@ ActivePreyPanel < Panel
       anchors.right: parent.right
       size: 155 15
       font: verdana-11px-rounded
-      text: Automatic Bonus Rer...
+      text: Cambio auto. de bonus
       margin-left: 5
       text-offset: 20 1
 
@@ -233,7 +233,7 @@ ActivePreyPanel < Panel
       anchors.right: parent.right
       size: 155 15
       font: verdana-11px-rounded
-      text: Lock Prey
+      text: Bloquear prey
       margin-left: 5
       text-offset: 20 1
 
@@ -366,7 +366,7 @@ InactivePreyPanel < Panel
       anchors.centerIn: parent
       font: verdana-11px-rounded
       text-align: center
-      !text: tr('No creature selected')
+      text: Ninguna criatura elegida
       color: #cfcfcf
 
     UICreature
@@ -412,7 +412,7 @@ InactivePreyPanel < Panel
       height: 20
       padding-left: 4
       padding-right: 18
-      placeholder: Type to search
+      placeholder: Escribe para buscar
       placeholder-color: #6e706f
       @onTextChange: modules.game_prey.onRaceSearchTextChanged(self)
 
@@ -540,7 +540,7 @@ CardLabel < FlatPanel
     anchors.right: parent.right
     anchors.verticalCenter: parent.verticalCenter
     image-source: /images/game/prey/prey_wildcard
-    tooltip: Prey Wildcards
+    tooltip: Comodines de presa
 
   UIWidget
     id: text
@@ -560,7 +560,7 @@ GoldLabel < FlatPanel
     anchors.right: parent.right
     anchors.verticalCenter: parent.verticalCenter
     image-source: /images/game/prey/prey_gold
-    tooltip: Gold Coins
+    tooltip: Monedas de oro
 
   UIWidget
     id: text
@@ -699,7 +699,7 @@ MainWindow
     anchors.right: parent.right
     anchors.bottom: parent.bottom
     size: 45 21
-    text: Close
+    text: Cerrar
     font: cipsoftFont
     @onClick: modules.game_prey.hide()
 
@@ -722,7 +722,7 @@ MainWindow
     margin-left: 10
     size: 26 20
     anchors.verticalCenter: closeButton.verticalCenter
-    tooltip: Go to the Store to get more Prey Wildcards!
+    tooltip: ¡Ve a la Tienda para conseguir más comodines de presa!
     image-source: /images/game/prey/prey_smallstore
     image-clip: 0 0 26 20
     background-color: #17354e
@@ -767,7 +767,7 @@ PreyCreature < Panel
     anchors.bottom: prev.bottom
     margin-bottom: 7
     anchors.right: parent.right
-    text: Inactive
+    text: Inactivo
     font: verdana-11px-rounded
     text-align: left
 
@@ -827,7 +827,7 @@ PreyTracker < MiniWindow
     layout: verticalBox
 
     Label
-      !text: tr('Prey Creatures')
+      text: Criaturas prey
       font: verdana-11px-rounded
 
     HorizontalSeparator

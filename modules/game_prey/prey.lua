@@ -40,28 +40,34 @@ local restoreRaceListItemBackground
 local setWidgetTreePhantom
 local updatePickSpecificPreyButton
 local refreshRerollButtonState
+-- Declarada aquí porque onPreyInactive (más arriba que su definición) la usa en el botón de reroll
+local showListRerollConfirmation
+
+-- Texto de "gratis": se compara en varios sitios, así que debe ser siempre el mismo
+local FREE_TEXT = 'Gratis'
+local PICK_SPECIFIC_PREY_COST = 5
 
 function bonusDescription(bonusType, bonusValue, bonusGrade)
     if bonusType == PREY_BONUS_DAMAGE_BOOST then
-        return 'Damage bonus (' .. bonusGrade .. '/10)'
+        return 'Bonus de da\241o (' .. bonusGrade .. '/10)'
     elseif bonusType == PREY_BONUS_DAMAGE_REDUCTION then
-        return 'Damage reduction bonus (' .. bonusGrade .. '/10)'
+        return 'Bonus de reducci\243n de da\241o (' .. bonusGrade .. '/10)'
     elseif bonusType == PREY_BONUS_XP_BONUS then
-        return 'XP bonus (' .. bonusGrade .. '/10)'
+        return 'Bonus de XP (' .. bonusGrade .. '/10)'
     elseif bonusType == PREY_BONUS_IMPROVED_LOOT then
-        return 'Loot bonus (' .. bonusGrade .. '/10)'
+        return 'Bonus de loot (' .. bonusGrade .. '/10)'
     else
-        return 'Unknown bonus'
+        return 'Bonus desconocido'
     end
-    return 'Unknown bonus'
+    return 'Bonus desconocido'
 end
 
 function timeleftTranslation(timeleft, forPreyTimeleft) -- in seconds
     if timeleft == 0 then
         if forPreyTimeleft then
-            return tr('infinite bonus')
+            return 'bonus infinito'
         end
-        return tr('Free')
+        return FREE_TEXT
     end
     local hours = string.format('%02.f', math.floor(timeleft / 3600))
     local mins = string.format('%02.f', math.floor(timeleft / 60 - (hours * 60)))
@@ -144,29 +150,29 @@ end
 local pickSpecificPreyBonusBySlot = {}
 
 local pickSpecificPreyDescriptionDefault =
-'If you like to select another prey creature, click here to choose from all available creatures.\nThe newly selected prey will be active for 2 hours hunting time again.\nYour current bonus will not be affected.'
+'Si quieres elegir otra criatura prey, haz clic aqu\237 para escoger entre todas las criaturas disponibles.\nLa nueva prey estar\225 activa otras 2 horas de caza.\nTu bonus actual no cambiar\225.'
 local pickSpecificPreyDescriptionTemplate =
-'If you like to select another prey creature, click here to choose from all available creatures.\nThe newly selected prey will be active for 2 hours hunting time again.\nYour current bonus +%s%% %s will not be affected.'
+'Si quieres elegir otra criatura prey, haz clic aqu\237 para escoger entre todas las criaturas disponibles.\nLa nueva prey estar\225 activa otras 2 horas de caza.\nTu bonus actual +%s%% %s no cambiar\225.'
 
 local descriptionTable = {
     ['shopPermButton'] =
-    'Go to the Store to purchase the Permanent Prey Slot. Once you have completed the purchase, you can activate a prey here, no matter if your character is on a free or a Premium account.',
-    ['shopTempButton'] = 'You can activate this prey whenever your account has Premium Status.',
+    'Ve a la Tienda para comprar el espacio de Prey permanente. Una vez comprado, podr\225s activar una prey aqu\237, tanto en cuenta gratuita como Premium. Las cuentas VIP lo tienen desbloqueado.',
+    ['shopTempButton'] = 'Puedes activar esta prey siempre que tu cuenta tenga estado Premium.',
     ['preyWindow'] = '',
     ['noBonusIcon'] =
-    'This prey is not available for your character yet.\nCheck the large blue button(s) to learn how to unlock this prey slot',
+    'Esta prey todav\237a no est\225 disponible para tu personaje.\nRevisa el bot\243n azul grande para saber c\243mo desbloquear este espacio.',
     ['selectPrey'] =
-    'Click here to get a bonus with a higher value. The bonus for your prey will be selected randomly from one of the following: damage boost, damage reduction, bonus XP, improved loot. Your prey will be active for 2 hours hunting time again. Your prey creature will stay the same.',
+    'Haz clic aqu\237 para obtener un bonus de mayor valor. El bonus se elige al azar entre: aumento de da\241o, reducci\243n de da\241o, bonus de XP o loot mejorado. Tu prey estar\225 activa otras 2 horas de caza y la criatura no cambia.',
     ['pickSpecificPrey'] = pickSpecificPreyDescriptionDefault,
     ['rerollButton'] =
-    'If you like to select another prey crature, click here to get a new list with 9 creatures to choose from.\nThe newly selected prey will be active for 2 hours hunting time again.',
-    ['preyCandidate'] = 'Select a new prey creature for the next 2 hours hunting time.',
+    'Si quieres elegir otra criatura prey, haz clic aqu\237 para obtener una nueva lista de 9 criaturas.\nLa nueva prey estar\225 activa otras 2 horas de caza.',
+    ['preyCandidate'] = 'Elige una nueva criatura prey para las pr\243ximas 2 horas de caza.',
     ['choosePreyButton'] =
-    'Click on this button to confirm selected monsters as your prey creature for the next 2 hours hunting time.',
+    'Haz clic en este bot\243n para confirmar la criatura elegida como tu prey durante las pr\243ximas 2 horas de caza.',
     ['automaticBonusReroll'] =
-    'Do you want to enable the Automatic Bonus Reroll?\nEach time the Automatic Bonus Reroll is triggered, 1 of your Prey Wildcards will be consumed.',
+    '\191Quieres activar el cambio autom\225tico de bonus?\nCada vez que se active, se gastar\225 1 de tus comodines de presa.',
     ['preyLock'] =
-    'Do you want to enable the Lock Prey?\nEach time the Lock Prey is triggered, 5 of your Prey Wildcards will be consumed.'
+    '\191Quieres activar el bloqueo de prey?\nCada vez que se active, se gastar\225n 5 de tus comodines de presa.'
 }
 
 local function getSlotIndexFromWidget(widget)
@@ -220,7 +226,7 @@ function onHover(widget)
         local slot = 'slot' .. (widget + 1)
         local tracker = preyTracker.contentsPanel[slot]
         local desc = tracker.time:getTooltip()
-        desc = desc:sub(1, desc:len() - 46)
+        desc = desc:gsub('\n\nHaz clic en esta ventana.*$', '')
         return preyWindow.description:setText(desc)
     end
     if widget and widget:isVisible() then
@@ -288,7 +294,7 @@ end
 function check()
     if g_game.getFeature(GamePrey) then
         if not preyButton then
-            preyButton = modules.game_mainpanel.addToggleButton('preyButton', tr('Prey Dialog'),
+            preyButton = modules.game_mainpanel.addToggleButton('preyButton', 'Ventana de Prey',
                 '/images/options/button_preydialog', toggle)
         end
         if g_game.getFeature(GameTaskboard) then
@@ -299,7 +305,7 @@ function check()
             return
         end
         if not preyTrackerButton then
-            preyTrackerButton = modules.game_mainpanel.addToggleButton('preyTrackerButton', tr('Prey Tracker'),
+            preyTrackerButton = modules.game_mainpanel.addToggleButton('preyTrackerButton', 'Rastreador de Prey',
                 '/images/options/button_prey', toggleTracker)
         end
     elseif preyButton then
@@ -499,7 +505,7 @@ function onPreyRerollPrice(price)
                 if state and state.reroll and state.reroll.price and state.reroll.button then
                     local priceWidget = state.reroll.price.text
                     local progressBar = state.reroll.button.time
-                    if progressBar:getText() ~= 'Free' then
+                    if progressBar:getText() ~= FREE_TEXT then
                         priceWidget:setText(comma_value(rerollPrice))
                     else
                         priceWidget:setText('0')
@@ -530,7 +536,7 @@ function setTimeUntilFreeReroll(slot, timeUntilFreeReroll) -- minutes
             if timeUntilFreeReroll > 0 then
                 price:setText(comma_value(rerollPrice))
             else
-                price:setText('Free')
+                price:setText(FREE_TEXT)
             end
         end
     end
@@ -553,7 +559,7 @@ function onPreyLocked(slot, unlockState, timeUntilFreeReroll, wildcards)
     if not prey then
         return
     end
-    prey.title:setText('Locked')
+    prey.title:setText('Bloqueado')
     prey.inactive:hide()
     prey.active:hide()
     prey.locked:show()
@@ -565,11 +571,11 @@ function onPreyInactive(slot, timeUntilFreeReroll, wildcards)
     if tracker then
         tracker.creature:hide()
         tracker.noCreature:show()
-        tracker.creatureName:setText('Inactive')
+        tracker.creatureName:setText('Inactivo')
         tracker.time:setPercent(0)
         tracker.preyType:setImageSource('/images/game/prey/prey_no_bonus')
         for i, element in pairs({ tracker.creatureName, tracker.creature, tracker.preyType, tracker.time }) do
-            element:setTooltip('Inactive Prey. \n\nClick in this window to open the prey dialog.')
+            element:setTooltip('Prey inactiva.\n\nHaz clic en esta ventana para abrir la ventana de Prey.')
             element.onClick = function()
                 show()
             end
@@ -648,25 +654,25 @@ end
 
 function getBonusDescription(bonusType)
     if bonusType == PREY_BONUS_DAMAGE_BOOST then
-        return 'Damage Boost'
+        return 'Aumento de da\241o'
     elseif bonusType == PREY_BONUS_DAMAGE_REDUCTION then
-        return 'Damage Reduction'
+        return 'Reducci\243n de da\241o'
     elseif bonusType == PREY_BONUS_XP_BONUS then
-        return 'XP Bonus'
+        return 'Bonus de XP'
     elseif bonusType == PREY_BONUS_IMPROVED_LOOT then
-        return 'Improved Loot'
+        return 'Loot mejorado'
     end
 end
 
 function getTooltipBonusDescription(bonusType, bonusValue)
     if bonusType == PREY_BONUS_DAMAGE_BOOST then
-        return 'You deal +' .. bonusValue .. '% extra damage against your prey creature.'
+        return 'Haces +' .. bonusValue .. '% de da\241o extra a tu criatura prey.'
     elseif bonusType == PREY_BONUS_DAMAGE_REDUCTION then
-        return 'You take ' .. bonusValue .. '% less damage from your prey creature.'
+        return 'Recibes un ' .. bonusValue .. '% menos de da\241o de tu criatura prey.'
     elseif bonusType == PREY_BONUS_XP_BONUS then
-        return 'Killing your prey creature rewards +' .. bonusValue .. '% extra XP.'
+        return 'Matar a tu criatura prey da +' .. bonusValue .. '% de XP extra.'
     elseif bonusType == PREY_BONUS_IMPROVED_LOOT then
-        return 'Your creature has a +' .. bonusValue .. '% chance to drop additional loot.'
+        return 'Tu criatura prey tiene +' .. bonusValue .. '% de probabilidad de soltar loot adicional.'
     end
 end
 
@@ -784,11 +790,11 @@ local function showPreyConfirmationWindow(title, description, confirmAction)
 
     confirmWindow = displayGeneralBox(tr(title), description, {
         {
-            text = tr('No'),
+            text = 'No',
             callback = closeWindow
         },
         {
-            text = tr('Yes'),
+            text = 'S\237',
             callback = confirm
         },
     }, confirm, closeWindow)
@@ -801,12 +807,12 @@ local function showPreyConfirmationWindow(title, description, confirmAction)
 end
 
 local function showPreyWildcardConfirmation(description, confirmAction)
-    showPreyConfirmationWindow('Confirmation of Using Prey Wildcards', description, confirmAction)
+    showPreyConfirmationWindow('Confirmar uso de comodines de presa', description, confirmAction)
 end
 
 local function showPickSpecificPreyConfirmation(slot, wildcardCount)
     local description = tr(string.format(
-        'Are you sure you want to use 5 of your remaining %s Prey Wildcards?',
+        '\191Seguro que quieres usar 5 de tus %s comodines de presa?',
         tostring(wildcardCount)
     ))
 
@@ -817,7 +823,7 @@ end
 
 local function showBonusRerollConfirmation(slot, wildcardCount)
     local description = tr(string.format(
-        'Are you sure you want to use 1 of your remaining %s Prey Wildcards?',
+        '\191Seguro que quieres usar 1 de tus %s comodines de presa?',
         tostring(wildcardCount)
     ))
 
@@ -850,7 +856,7 @@ local function getRerollPriceFromPanel(panel)
         return nil
     end
 
-    if text:lower() == 'free' then
+    if text:lower() == 'free' or text == FREE_TEXT then
         return 0
     end
 
@@ -932,7 +938,7 @@ function refreshRerollButtonState(slot)
     updatePanel(prey.inactive)
 end
 
-local function showListRerollConfirmation(slot)
+showListRerollConfirmation = function(slot)
     local price = getDisplayedRerollPrice(slot)
 
     if price == nil then
@@ -946,12 +952,12 @@ local function showListRerollConfirmation(slot)
 
     local totalGold = getPlayerTotalGold()
     local description = tr(string.format(
-        'Do you want to spend %s gold for a List Reroll?\nYou current have %s gold available for the purchase.',
+        '\191Quieres gastar %s de oro en una nueva lista?\nTienes %s de oro disponible.',
         comma_value(price),
         comma_value(totalGold)
     ))
 
-    showPreyConfirmationWindow('Confirmation of Using List Reroll', description, function()
+    showPreyConfirmationWindow('Confirmar nueva lista', description, function()
         g_game.preyAction(slot, PREY_ACTION_LISTREROLL, 0)
     end)
 end
@@ -963,7 +969,7 @@ function updatePickSpecificPreyButton(slot, wildcards)
     end
 
     local wildcardCount = getWildcardCountOrDefault(wildcards)
-    local hasWildcardsAvailable = wildcardCount > 5
+    local hasWildcardsAvailable = wildcardCount >= PICK_SPECIFIC_PREY_COST
 
     local function refreshButton(panel)
         if not panel or not panel.select or not panel.select.pickSpecificPrey then
@@ -1268,7 +1274,7 @@ local function buildRaceEntry(raceId)
     if name and name ~= '' then
         name = capitalFormatStr(name)
     else
-        name = tr('Unknown Creature (%d)', raceId)
+        name = string.format('Criatura desconocida (%d)', raceId)
     end
 
     local outfit = raceData and raceData.outfit or nil
@@ -1322,10 +1328,10 @@ updateRaceSelectionDisplay = function(slot)
     if prey.title then
         if entry then
             setWidgetTextToFit(prey.title, entry.name, function(value)
-                return tr('Selected: %s', value)
+                return string.format('Elegida: %s', value)
             end)
         else
-            prey.title:setText(tr('Select your prey creature'))
+            prey.title:setText('Elige tu criatura prey')
         end
     end
 
@@ -1348,7 +1354,7 @@ updateRaceSelectionDisplay = function(slot)
             elseif scale > 100 then
                 scale = 100
             end
-            creatureWidget:setCreatureSize(size)
+            creatureWidget:setCreatureSize(targetSize)
             creatureWidget:setOutfit(entry.outfit)
             creatureWidget:setVisible(true)
             if placeholder then
@@ -1621,13 +1627,13 @@ local function handleToggleOptions(checkbox, slot, currentOption, checked)
         local description = currentOption == PREY_OPTION_TOGGLE_AUTOREROLL and
             tr(descriptionTable['automaticBonusReroll']) or tr(descriptionTable['preyLock'])
 
-        confirmWindow = displayGeneralBox(tr('Confirmation of Using Prey Wildcards'), description, {
+        confirmWindow = displayGeneralBox('Confirmar uso de comodines de presa', description, {
             {
-                text = tr('No'),
+                text = 'No',
                 callback = cancel
             },
             {
-                text = tr('Yes'),
+                text = 'S\237',
                 callback = confirm
             },
         }, confirm, cancel)
@@ -1656,10 +1662,10 @@ function onPreyActive(slot, currentHolderName, currentHolderOutfit, bonusType, b
         tracker.preyType:setImageSource(getSmallIconPath(bonusType))
         tracker.time:setPercent(percent)
         preyDescription[slot] = preyDescription[slot] or {}
-        preyDescription[slot].one = 'Creature: ' .. currentHolderName .. '\nDuration: '
+        preyDescription[slot].one = 'Criatura: ' .. currentHolderName .. '\nDuraci\243n: '
         preyDescription[slot].two =
-            '\nValue: ' .. bonusGrade .. '/10' .. '\nType: ' .. getBonusDescription(bonusType) .. '\n' ..
-            getTooltipBonusDescription(bonusType, bonusValue) .. '\n\nClick in this window to open the prey dialog.'
+            '\nValor: ' .. bonusGrade .. '/10' .. '\nTipo: ' .. getBonusDescription(bonusType) .. '\n' ..
+            getTooltipBonusDescription(bonusType, bonusValue) .. '\n\nHaz clic en esta ventana para abrir la ventana de Prey.'
         for i, element in pairs({ tracker.creatureName, tracker.creature, tracker.preyType, tracker.time }) do
             element:setTooltip(preyDescription[slot].one .. timeleftTranslation(timeLeft, true) ..
                 preyDescription[slot].two)
@@ -1685,7 +1691,7 @@ function onPreyActive(slot, currentHolderName, currentHolderOutfit, bonusType, b
     end
     setBonusGradeStars(slot, bonusGrade)
     creatureAndBonus.timeLeft:setPercent(percent)
-    creatureAndBonus.timeLeft:setText(timeleftTranslation(timeLeft))
+    creatureAndBonus.timeLeft:setText(timeleftTranslation(timeLeft, true))
     -- bonus reroll
     local wildcardCount = getWildcardCountOrDefault(wildcards)
     setPickSpecificPreyBonus(slot, bonusType, bonusValue)
@@ -1716,11 +1722,11 @@ function onPreySelection(slot, names, outfits, timeUntilFreeReroll, wildcards, o
     if tracker then
         tracker.creature:hide()
         tracker.noCreature:show()
-        tracker.creatureName:setText('Inactive')
+        tracker.creatureName:setText('Inactivo')
         tracker.time:setPercent(0)
         tracker.preyType:setImageSource('/images/game/prey/prey_no_bonus')
         for i, element in pairs({ tracker.creatureName, tracker.creature, tracker.preyType, tracker.time }) do
-            element:setTooltip('Inactive Prey. \n\nClick in this window to open the prey dialog.')
+            element:setTooltip('Prey inactiva.\n\nHaz clic en esta ventana para abrir la ventana de Prey.')
             element.onClick = function()
                 show()
             end
@@ -1740,7 +1746,7 @@ function onPreySelection(slot, names, outfits, timeUntilFreeReroll, wildcards, o
     selectedRaceEntryBySlot[slot] = nil
     selectedRaceWidgetBySlot[slot] = nil
     setPickSpecificPreyBonus(slot)
-    prey.title:setText(tr('Select monster'))
+    prey.title:setText('Elige un monstruo')
     local rerollButton = prey.inactive.reroll and prey.inactive.reroll.button and
         prey.inactive.reroll.button.rerollButton
     if rerollButton then
@@ -1764,7 +1770,7 @@ function onPreySelection(slot, names, outfits, timeUntilFreeReroll, wildcards, o
                 return g_game.preyAction(slot, PREY_ACTION_MONSTERSELECTION, i - 1)
             end
         end
-        return showMessage(tr('Error'), tr('Select monster to proceed.'))
+        return showMessage('Error', 'Elige un monstruo para continuar.')
     end
 
     updateChoosePreyButtonState(slot)
@@ -1778,11 +1784,11 @@ function onPreySelectionChangeMonster(slot, names, outfits, bonusType, bonusValu
     if tracker then
         tracker.creature:hide()
         tracker.noCreature:show()
-        tracker.creatureName:setText('Inactive')
+        tracker.creatureName:setText('Inactivo')
         tracker.time:setPercent(0)
         tracker.preyType:setImageSource('/images/game/prey/prey_no_bonus')
         for i, element in pairs({ tracker.creatureName, tracker.creature, tracker.preyType, tracker.time }) do
-            element:setTooltip('Inactive Prey. \n\nClick in this window to open the prey dialog.')
+            element:setTooltip('Prey inactiva.\n\nHaz clic en esta ventana para abrir la ventana de Prey.')
             element.onClick = function()
                 show()
             end
@@ -1802,7 +1808,7 @@ function onPreySelectionChangeMonster(slot, names, outfits, bonusType, bonusValu
     selectedRaceEntryBySlot[slot] = nil
     selectedRaceWidgetBySlot[slot] = nil
     setPickSpecificPreyBonus(slot)
-    prey.title:setText(tr('Select monster'))
+    prey.title:setText('Elige un monstruo')
     local rerollButton = prey.inactive.reroll and prey.inactive.reroll.button and
         prey.inactive.reroll.button.rerollButton
     if rerollButton then
@@ -1826,7 +1832,7 @@ function onPreySelectionChangeMonster(slot, names, outfits, bonusType, bonusValu
                 return g_game.preyAction(slot, PREY_ACTION_MONSTERSELECTION, i - 1)
             end
         end
-        return showMessage(tr('Error'), tr('Select monster to proceed.'))
+        return showMessage('Error', 'Elige un monstruo para continuar.')
     end
 
     updateChoosePreyButtonState(slot)
@@ -1855,7 +1861,7 @@ function onPreyListSelection(slot, races, nextFreeReroll, wildcards, option)
         return
     end
 
-    prey.title:setText(tr('Select your prey creature'))
+    prey.title:setText('Elige tu criatura prey')
 
     clearFullListEntries(fullList)
 
@@ -1881,7 +1887,7 @@ function onPreyListSelection(slot, races, nextFreeReroll, wildcards, option)
         chooseButton.onClick = function()
             local selected = selectedRaceEntryBySlot[slot]
             if not selected then
-                return showMessage(tr('Error'), tr('Select monster to proceed.'))
+                return showMessage('Error', 'Elige un monstruo para continuar.')
             end
             g_game.preyAction(slot, PREY_ACTION_CHANGE_FROM_ALL, selected.raceId)
         end
