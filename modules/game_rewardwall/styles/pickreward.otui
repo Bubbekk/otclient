@@ -1,5 +1,5 @@
 MainWindowHigh
-  !text: tr('Pick Reward')
+  !text: tr('Elegir recompensa')
   size: 450 378
   text-offset: 0 2
   font: $var-cip-font-new
@@ -16,7 +16,7 @@ MainWindowHigh
     anchors.top: parent.top
     margin-top: 9
     margin-left: -5
-    text: you have selected 0 of 2 reward items.
+    text: Has seleccionado 0 de 2 objetos de recompensa.
 
   TextList
     id: rewardList
@@ -56,7 +56,7 @@ MainWindowHigh
     anchors.top: rewardList.bottom
     margin-top: 6
     margin-left: -11
-    text: Free Capacity: 737.60 oz
+    text: Capacidad libre: 0.00 oz
 
   Label
     font: $var-cip-font-new
@@ -66,7 +66,7 @@ MainWindowHigh
     anchors.top: rewardList.bottom
     margin-top: 6
     margin-right: 5
-    text: Total weight: 0.00 oz
+    text: Peso total: 0.00 oz
 
   HorizontalSeparator
     id: separator
@@ -79,7 +79,7 @@ MainWindowHigh
 
   Button
     id: btnClose
-    !text: tr('Close')
+    !text: tr('Cerrar')
     size: 43 20
     anchors.right: parent.right
     anchors.bottom: parent.bottom
@@ -89,7 +89,7 @@ MainWindowHigh
 
   Button
     id: btnOk
-    !text: tr('Ok')
+    !text: tr('Aceptar')
     size: 43 20
     anchors.right: btnClose.left
     anchors.bottom: parent.bottom

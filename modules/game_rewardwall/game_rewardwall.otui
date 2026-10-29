@@ -1,6 +1,6 @@
 MainWindowHigh
   id: rewardWallWindow
-  !text: tr('Reward Wall')
+  !text: tr('Muro de recompensas')
   font: $var-cip-font-new
   color: #909090
   size: 538 522
@@ -15,7 +15,7 @@ MainWindowHigh
     anchors.bottom: parent.bottom
     margin-top: -7
     margin-bottom: 32
-    !text: tr('History')
+    !text: tr('Historial')
     text-offset: 0 2
     font: $var-cip-font-new
     color: #909090
@@ -43,7 +43,7 @@ MainWindowHigh
     size: 506 126
     anchors.top: parent.top
     anchors.left: parent.left
-    !text: tr('Resting Area Bonuses')
+    !text: tr('Bonus de zonas de descanso')
     text-offset: -1 2
     font: $var-cip-font-new
     color: #909090
@@ -149,11 +149,11 @@ MainWindowHigh
       font: $var-cip-font-new
       phantom: true
       color: #c0c0c0
-      text: Great! You benefit from the best possible rewards and bonuses due to your premium status.
+      text: Genial! Recibes las mejores recompensas y bonus posibles gracias a tu estado premium.
 
   MiniPanel
     id: dailyRewardsPanel
-    !text: tr('Daily Rewards')
+    !text: tr('Recompensas diarias')
     text-offset: -1 2
     font: $var-cip-font-new
     color: #909090
@@ -417,7 +417,7 @@ MainWindowHigh
       anchors.left: parent.left
       anchors.top: parent.top
       margin-top: -2
-      text: Great! You benefit from the best possible rewards and bonuses due to your premium status.
+      text: Genial! Recibes las mejores recompensas y bonus posibles gracias a tu estado premium.
 
     BigPremiumButton
       id: premiumButton
@@ -579,7 +579,7 @@ MainWindowHigh
 
     Button
       id: historyButton
-      !text: tr('History')
+      !text: tr('Historial')
       size: 43 20
       anchors.bottom: parent.bottom
       anchors.right: closeButton.left
@@ -589,7 +589,7 @@ MainWindowHigh
 
     Button
       id: closeButton
-      !text: tr('Close')
+      !text: tr('Cerrar')
       size: 43 20
       anchors.right: parent.right
       anchors.bottom: parent.bottom

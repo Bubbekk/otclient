@@ -2,6 +2,30 @@
 
 rewardWallController = Controller:new()
 
+-- Traducción al español (textos en Latin-1: \225 = á, \237 = í, etc., porque el cliente usa cp1252).
+-- Los nombres de bonus llegan del servidor en inglés y el código los compara en inglés,
+-- por eso solo se traducen al mostrarlos.
+local BONUS_NAMES_ES = {
+	["No bonus for first day"] = "Sin bonus el primer d\237a",
+	["Hit Point Regeneration"] = "Regeneraci\243n de puntos de vida",
+	["Mana Regeneration"] = "Regeneraci\243n de man\225",
+	["Stamina Regeneration"] = "Regeneraci\243n de resistencia",
+	["Double Hit Point Regeneration"] = "Doble regeneraci\243n de puntos de vida",
+	["Double Mana Regeneration"] = "Doble regeneraci\243n de man\225",
+	["Soul Points Regeneration"] = "Regeneraci\243n de puntos de alma",
+}
+
+local function bonusNameEs(name)
+	return BONUS_NAMES_ES[name] or name
+end
+
+local function itemNameEs(name)
+	if name == "Prey Wildcard" then
+		return "Comod\237n de presa"
+	end
+	return name
+end
+
 local ServerPackets = {
 	CloseRewardWall = 227,
 	OpenRewardWall = 226,
@@ -72,12 +96,12 @@ local CONST_WINDOWS_BOX = {
 }
 local BOX_CONFIGS = {
 	[CONST_WINDOWS_BOX.ALREADY] = {
-		title = "Warning",
-		content = "Sorry, you have already taken your daily reward or you are unable to collect it"
+		title = "Aviso",
+		content = "Lo sentimos, ya recogiste tu recompensa diaria o no puedes recogerla."
 	},
 	[CONST_WINDOWS_BOX.NO_IRA] = {
-		title = "Warning: No Sufficient Instant Reward Access",
-		content = "Remember! you can always collect your daily reward for free by visiting a reward shrine!\nyou do not have an Instant Reward Access.\nVisit the store to buy more!"
+		title = "Aviso: no tienes Acceso instant\225neo a recompensas",
+		content = "\161Recuerda! Siempre puedes recoger tu recompensa diaria gratis visitando un santuario de recompensas.\nNo tienes ning\250n Acceso instant\225neo a recompensas.\n\161Visita la Tienda para comprar m\225s!"
 	}
 }
 
@@ -125,7 +149,7 @@ local function claimInstantDailyReward()
 end
 
 local function premiumStatusWindwos(isPremium)
-	rewardWallController.ui.premiumStatus.premiumMessage:setText(isPremium and "Great! You benefit from the best possible rewards and bonuses due to your premium status." or "With a Premium account, you would benefit from even better rewards and bonuses.")
+	rewardWallController.ui.premiumStatus.premiumMessage:setText(isPremium and "\161Genial! Recibes las mejores recompensas y bonus posibles gracias a tu estado premium." or "Con una cuenta Premium obtendr\237as recompensas y bonus a\250n mejores.")
 	rewardWallController.ui.premiumStatus.premiumButton:setOn(not isPremium)
 	rewardWallController.ui.premiumStatus.premiumMessage:setMarginTop(-5)
 	rewardWallController.ui.infoPanel.free:setColor(isPremium and "#909090" or "#FFFFFF")
@@ -395,7 +419,7 @@ local function getBonusStrings(bonuses)
 	local result = {}
 
 	for _, bonus in ipairs(bonuses) do
-		table.insert(result, bonus.name)
+		table.insert(result, bonusNameEs(bonus.name))
 	end
 
 	return table.concat(result, ", ")
@@ -421,7 +445,7 @@ local function resetHistoryView()
 	end
 
 	visibleHistory(false)
-	rewardWallController.ui.footerPanel.historyButton:setText("History")
+	rewardWallController.ui.footerPanel.historyButton:setText("Historial")
 end
 
 local REWARD_CONTAINER_ACTIVE = "/game_rewardwall/images/container-bonus-active"
@@ -750,7 +774,7 @@ end
 local function getBonusDescription(bonusName, streakCount, activeBonuses)
 	local isPremium = g_game.getLocalPlayer():isPremium()
 
-	return string.format("Allow [color=#909090]%s[/color]%s\nThis bonus is active because you are [color=%s]Premium[/color] and reached a reward streak of at least [color=#44AD25]%d[/color].%s", bonusName, isPremium and "" or "[color=#ff0000](Locked)[/color]", isPremium and "#44AD25" or "#ff0000", streakCount, isPremium and ("\n\nActive bonuses: [color=#909090]%s[/color]."):format(activeBonuses) or "")
+	return string.format("Permite [color=#909090]%s[/color]%s\nEste bonus est\225 activo porque eres [color=%s]Premium[/color] y alcanzaste una racha de recompensas de al menos [color=#44AD25]%d[/color].%s", bonusNameEs(bonusName), isPremium and "" or "[color=#ff0000](Bloqueado)[/color]", isPremium and "#44AD25" or "#ff0000", streakCount, isPremium and ("\n\nBonus activos: [color=#909090]%s[/color]."):format(activeBonuses) or "")
 end
 
 local function checkRewards(data)
@@ -825,9 +849,9 @@ local function onDailyRewardCollectionState(state)
 	end
 
 	local text = {
-		[DailyRewardStatus.DAILY_REWARD_COLLECTED] = "You already claimed your daily reward.",
-		[DailyRewardStatus.DAILY_REWARD_NOTCOLLECTED] = "You did not claim your daily reward in time.\n If you don't claim your reward now, your [color=#D33C3C]streak will be reset[/color].",
-		[DailyRewardStatus.DAILY_REWARD_NOTAVAILABLE] = "Your daily reward is currently not available."
+		[DailyRewardStatus.DAILY_REWARD_COLLECTED] = "Ya reclamaste tu recompensa diaria.",
+		[DailyRewardStatus.DAILY_REWARD_NOTCOLLECTED] = "No reclamaste tu recompensa diaria a tiempo.\n Si no la reclamas ahora, [color=#D33C3C]tu racha se reiniciar\225[/color].",
+		[DailyRewardStatus.DAILY_REWARD_NOTAVAILABLE] = "Tu recompensa diaria no est\225 disponible en este momento."
 	}
 
 	if not text[state] then
@@ -884,7 +908,7 @@ local function onServerError(code, error)
 
 	local standardButtons = {
 		{
-			text = "ok",
+			text = "Aceptar",
 			callback = cancelCallback
 		}
 	}
@@ -1011,9 +1035,9 @@ local function onRewardHistory(rewardHistory)
 	local headerRow = g_ui.createWidget("historyData2", transferHistory)
 
 	headerRow:setBackgroundColor("#363636")
-	headerRow.date:setText("Date")
-	headerRow.Balance:setText("Streak")
-	headerRow.Description:setText("Event")
+	headerRow.date:setText("Fecha")
+	headerRow.Balance:setText("Racha")
+	headerRow.Description:setText("Evento")
 
 	for i, data in ipairs(rewardHistory) do
 		local row = g_ui.createWidget("historyData2", transferHistory)
@@ -1264,7 +1288,7 @@ end
 function rewardWallController:onGameStart()
 	if g_game.getClientVersion() > 1140 then
 		if not ButtonRewardWall then
-			ButtonRewardWall = modules.game_mainpanel.addToggleButton("rewardWall", tr("Open Reward Wall"), "/images/options/button_reward_wall", toggle, false, 21)
+			ButtonRewardWall = modules.game_mainpanel.addToggleButton("rewardWall", tr("Abrir muro de recompensas"), "/images/options/button_reward_wall", toggle, false, 21)
 		end
 	else
 		scheduleEvent(function()
@@ -1305,7 +1329,7 @@ end
 function rewardWallController:onClickshowHistory()
 	visibleHistory(not rewardWallController.ui.historyPanel:isVisible())
 	g_game.requestOpenRewardHistory()
-	rewardWallController.ui.footerPanel.historyButton:setText(rewardWallController.ui.historyPanel:isVisible() and "Back" or "History")
+	rewardWallController.ui.footerPanel.historyButton:setText(rewardWallController.ui.historyPanel:isVisible() and "Volver" or "Historial")
 end
 
 function rewardWallController:onClickToggle()
@@ -1343,9 +1367,9 @@ function rewardWallController:onClickDisplayWindowsPickRewardWindow(event)
 			windowsPickWindow:show()
 			windowsPickWindow:raise()
             windowsPickWindow:focus()
-			windowsPickWindow:getChildById("capacity"):setText("Free capacity: " .. g_game:getLocalPlayer():getFreeCapacity() .. " oz")
+			windowsPickWindow:getChildById("capacity"):setText("Capacidad libre: " .. g_game:getLocalPlayer():getFreeCapacity() .. " oz")
 
-			local text = string.format("You have selected [color=#D33C3C]0[/color] of %d reward items", itemsToSelect)
+			local text = string.format("Has seleccionado [color=#D33C3C]0[/color] de %d objetos de recompensa", itemsToSelect)
 
 			windowsPickWindow:getChildById("rewardLabel"):parseColoredText(text, "#c0c0c0")
 
@@ -1385,18 +1409,18 @@ function rewardWallController:onClickDisplayWindowsPickRewardWindow(event)
 		if getClaimUsedToken() == 1 then
 			local buttons = {
 				{
-					text = "Cancel",
+					text = "Cancelar",
 					callback = function()
 						generalBox = destroyWindows(generalBox)
 					end
 				},
 				{
-					text = "OK",
+					text = "Aceptar",
 					callback = claimReward
 				}
 			}
 
-			generalBox = displayGeneralBox3("Confirm Daily Reward", "Claiming this reward will use 1 Instant Reward Access. Continue?", buttons)
+			generalBox = displayGeneralBox3("Confirmar recompensa diaria", "Reclamar esta recompensa usar\225 1 Acceso instant\225neo a recompensas. \191Continuar?", buttons)
 
 			return
 		end
@@ -1417,7 +1441,7 @@ function rewardWallController:onhoverBonus(event)
 	local bonus = bonuses[index]
 
 	if not bonus then
-		showInfoPanelDescription("Unknown bonus.", false)
+		showInfoPanelDescription("Bonus desconocido.", false)
 
 		return
 	end
@@ -1425,14 +1449,14 @@ function rewardWallController:onhoverBonus(event)
 	local isPremium = g_game.getLocalPlayer():isPremium()
 	local requiresPremium = bonus.name ~= "Hit Point Regeneration" and bonus.name ~= "Mana Regeneration"
 	local isLocked = rewardStreakLevel < bonus.id or (requiresPremium and not isPremium)
-	local lockedTitle = isLocked and "[color=#ff0000](Locked)[/color]" or ""
-	local activeBonuses = isPremium and not isLocked and ("\n\nActive bonuses: %s."):format(getBonusStrings(bonuses)) or ""
+	local lockedTitle = isLocked and "[color=#ff0000](Bloqueado)[/color]" or ""
+	local activeBonuses = isPremium and not isLocked and ("\n\nBonus activos: %s."):format(getBonusStrings(bonuses)) or ""
 	local bonusText = ""
 
 	if not requiresPremium then
-		bonusText = string.format("%s %s\nThis bonus is active if you reached a reward streak of at least [color=#44AD25]%d[/color].%s", bonus.name, lockedTitle, bonus.id, activeBonuses)
+		bonusText = string.format("%s %s\nEste bonus est\225 activo si alcanzaste una racha de recompensas de al menos [color=#44AD25]%d[/color].%s", bonusNameEs(bonus.name), lockedTitle, bonus.id, activeBonuses)
 	else
-		bonusText = string.format("%s %s\nThis bonus is active if you are [color=%s]Premium[/color] and reached a reward streak of at least [color=#44AD25]%d[/color].%s", bonus.name, lockedTitle, isPremium and "#44AD25" or "#ff0000", bonus.id, activeBonuses)
+		bonusText = string.format("%s %s\nEste bonus est\225 activo si eres [color=%s]Premium[/color] y alcanzaste una racha de recompensas de al menos [color=#44AD25]%d[/color].%s", bonusNameEs(bonus.name), lockedTitle, isPremium and "#44AD25" or "#ff0000", bonus.id, activeBonuses)
 	end
 
 
@@ -1447,11 +1471,11 @@ function rewardWallController:onhoverStatusPlayer(event)
 	end
 
 	local playerStatus = {
-		rewardStreakIcon = "This is your reward streak. As long as you claim your daily reward once between two regular server saves, your reward streak keeps rising. If you have reached a reward streak of at least 2, your character will benefit from bonuses in resting areas. Characters on free accounts reach the maximum bonus at a reward streak of 3. Premium players with a reward streak of 7 or higher will benefit from the best bonuses in resting areas.",
-		timeLeft = "This is an urgent notification to claim your daily reward within one minute (before the next server save) to raise your reward streak by 1. It mentions that 3 Daily Reward Jokers will be used to prevent resetting your streak. It also encourages raising your streak to benefit from bonuses in resting areas.",
-		restingAreaGold = "Daily Reward Jokers help you to keep your reward streak. If there is a day on which your're unable to claim your daily reward, you can use a joker to continue your streak. The more jokers you have, the more days you can cover. \nEvery Character will receive a Daily Reward Joker on the first day of each month. Characters can have up to 3 jokers. \nTo be on the safe side, remember to collect your reward on a daily basis."
+		rewardStreakIcon = "Esta es tu racha de recompensas. Mientras reclames tu recompensa diaria una vez entre dos guardados del servidor, tu racha seguir\225 subiendo. Con una racha de al menos 2, tu personaje recibe bonus en las zonas de descanso. Las cuentas gratuitas alcanzan el bonus m\225ximo con una racha de 3. Los jugadores Premium con una racha de 7 o m\225s reciben los mejores bonus en las zonas de descanso.",
+		timeLeft = "Aviso urgente: reclama tu recompensa diaria antes del pr\243ximo guardado del servidor para subir tu racha en 1. Si no lo haces, se usar\225n comodines de recompensa diaria para que tu racha no se reinicie. Sube tu racha para obtener bonus en las zonas de descanso.",
+		restingAreaGold = "Los comodines de recompensa diaria te ayudan a mantener tu racha. Si alg\250n d\237a no puedes reclamar tu recompensa, se usa un comod\237n para continuar la racha. Cuantos m\225s comodines tengas, m\225s d\237as puedes cubrir.\nCada personaje recibe un comod\237n el primer d\237a de cada mes, hasta un m\225ximo de 3.\nPara ir sobre seguro, recuerda recoger tu recompensa todos los d\237as."
 	}
-	local DEFAULT_MESSAGE = "Unknown bonus."
+	local DEFAULT_MESSAGE = "Bonus desconocido."
 	local id = event.target:getId()
 	local info = playerStatus[id]
 
@@ -1485,20 +1509,20 @@ function rewardWallController:onhoverRewardType(event)
 
 	if rewardType == bundleType.ITEMS then
 		rewardTexts = {
-			free = string.format("Reward for Free Accounts:\nPick %d %s from the list. Among\nother items it contains: a training\nsword, a training bow, a training\nwraps", freeAmount, freeAmount == 1 and "item" or "items"),
-			premium = string.format("Reward for Premium Accounts:\nPick %d %s from the list. Among\nother items it contains: a training\nsword, a training bow, a training\nwraps", premiumAmount, premiumAmount == 1 and "item" or "items")
+			free = string.format("Recompensa para cuentas gratuitas:\nElige %d %s de la lista. Entre\notros incluye: una espada de\nentrenamiento, un arco de\nentrenamiento y unas vendas", freeAmount, freeAmount == 1 and "objeto" or "objetos"),
+			premium = string.format("Recompensa para cuentas Premium:\nElige %d %s de la lista. Entre\notros incluye: una espada de\nentrenamiento, un arco de\nentrenamiento y unas vendas", premiumAmount, premiumAmount == 1 and "objeto" or "objetos")
 		}
 	elseif rewardType == bundleType.PREY then
 		local itemName = event.target.itemName or "Prey Wildcard"
 
 		rewardTexts = {
-			free = string.format("Reward for Free Accounts:\n %dx %s", freeAmount, itemName),
-			premium = string.format("Reward for Premium Accounts:\n %dx %s", premiumAmount, itemName)
+			free = string.format("Recompensa para cuentas gratuitas:\n %dx %s", freeAmount, itemNameEs(itemName)),
+			premium = string.format("Recompensa para cuentas Premium:\n %dx %s", premiumAmount, itemNameEs(itemName))
 		}
 	elseif rewardType == bundleType.XPBOOST then
 		rewardTexts = {
-			free = string.format("Reward for Free Accounts:\n %d minutes 50%% XP Boost", freeAmount),
-			premium = string.format("Reward for Premium Accounts:\n %d minutes 50%% XP Boost", premiumAmount)
+			free = string.format("Recompensa para cuentas gratuitas:\n %d minutos de Potenciador de XP del 50%%", freeAmount),
+			premium = string.format("Recompensa para cuentas Premium:\n %d minutos de Potenciador de XP del 50%%", premiumAmount)
 		}
 	else
 		print("WARNING: Unknown rewardType:", rewardType)
@@ -1524,7 +1548,7 @@ function rewardWallController:onhoverStatusReward(event)
 
 	local status = event.target.status
 
-	showInfoPanelDescription(statusReward[status] or "Unknown reward status.", false)
+	showInfoPanelDescription(statusReward[status] or "Estado de recompensa desconocido.", false)
 end
 
 function onClickBtnOk()
@@ -1637,7 +1661,7 @@ local function refreshPickRewardSummary(referenceRow)
 
 	windowsPickWindow:getChildById("btnOk"):setEnabled(alreadyUsed > 0)
 
-	local text = string.format("You have selected [color=%s]%d[/color] of %d reward items", color, alreadyUsed, referenceRow.itemsToSelect)
+	local text = string.format("Has seleccionado [color=%s]%d[/color] de %d objetos de recompensa", color, alreadyUsed, referenceRow.itemsToSelect)
 
 	windowsPickWindow:getChildById("rewardLabel"):parseColoredText(text, "#c0c0c0")
 
@@ -1657,7 +1681,7 @@ local function refreshPickRewardSummary(referenceRow)
 
 	local weightLabel = windowsPickWindow:getChildById("weight")
 
-	weightLabel:setText(string.format("Total weight: %s", formatRewardItemWeight(totalWeight)))
+	weightLabel:setText(string.format("Peso total: %s", formatRewardItemWeight(totalWeight)))
 	weightLabel:resizeToText()
 end
 
@@ -1886,11 +1910,11 @@ function managerMessageBoxWindow(id)
 	end
 	local standardButtons = {
 		{
-			text = "cancel",
+			text = "Cancelar",
 			callback = cancelCallback
 		},
 		{
-			text = "ok",
+			text = "Aceptar",
 			callback = okCallback
 		}
 	}
