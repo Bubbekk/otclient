@@ -149,7 +149,7 @@ MainWindowHigh
       font: $var-cip-font-new
       phantom: true
       color: #c0c0c0
-      text: Genial! Recibes las mejores recompensas y bonus posibles gracias a tu estado premium.
+      text: ¡Genial! Recibes las mejores recompensas y bonus posibles gracias a tu estado premium.
 
   MiniPanel
     id: dailyRewardsPanel
@@ -417,7 +417,7 @@ MainWindowHigh
       anchors.left: parent.left
       anchors.top: parent.top
       margin-top: -2
-      text: Genial! Recibes las mejores recompensas y bonus posibles gracias a tu estado premium.
+      text: ¡Genial! Recibes las mejores recompensas y bonus posibles gracias a tu estado premium.
 
     BigPremiumButton
       id: premiumButton

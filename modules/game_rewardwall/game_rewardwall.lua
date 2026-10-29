@@ -1535,9 +1535,12 @@ end
 
 function rewardWallController:onhoverStatusReward(event)
 	local statusReward = {
-		[STATUS.COLLECTED] = "You have already collected this daily reward.\nThe daily rewards follow a specific cycle where each day you claim it, you get another reward. The cycle repeats after 7 claimed rewards. You will be able to claim this daily reward again as soon as you have reached this postion in the next cycle.",
-		[STATUS.ACTIVE] = "The daily reward can be claimed now.\nIf you claim this reward now, it will cost you one Instant Reward Access.\nGet your daily reward for free by visiting a reward shrine.\nYou did not claim your daily reward in time.\nToo bad, you do not have enough Daily Reward Jokers.",
-		[STATUS.LOCKED] = "This daily reward is still locked.\nFirst collect the previous daily rewards of this cycle."
+		[STATUS.COLLECTED] = "Ya recogiste esta recompensa diaria.\nLas recompensas diarias siguen un ciclo: cada d\237a que reclamas, obtienes la siguiente recompensa. El ciclo se repite tras 7 recompensas reclamadas. Podr\225s volver a reclamar esta recompensa cuando llegues a esta posici\243n en el siguiente ciclo.",
+
+		[STATUS.ACTIVE] = "Puedes reclamar esta recompensa diaria ahora.\nSi la reclamas desde aqu\237, te costar\225 1 Acceso instant\225neo a recompensas.\nRec\243gela gratis visitando un santuario de recompensas.",
+
+		[STATUS.LOCKED] = "Esta recompensa diaria todav\237a est\225 bloqueada.\nPrimero recoge las recompensas anteriores de este ciclo."
+
 	}
 
 	if not event.value then
