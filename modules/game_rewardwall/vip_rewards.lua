@@ -7,12 +7,12 @@ local VIP_OPCODE = 120
 
 -- Debe coincidir con REWARDS del servidor (mismo orden de días y de opciones)
 local VIP_REWARDS = {
-	{ item = 236, text = "25 pociones fuertes de vida o de man\225 (a elegir)", choices = { "Pociones fuertes de vida", "Pociones fuertes de man\225" } },
+	{ item = 236, text = "25 pociones fuertes de vida o de man\225 (a elegir)", choices = { "Vida (25)", "Man\225 (25)" } },
 	{ image = "/images/game/prey/prey_wildcard", text = "2 comodines de presa" },
-	{ item = 28552, text = "Arma de entrenamiento de 500 cargas (a elegir)", choices = { "Espada", "Hacha", "Maza", "Arco", "Vara (rod)", "Varita (wand)" } },
+	{ item = 28552, text = "Arma de entrenamiento de 500 cargas (a elegir)", choices = { "Espada", "Hacha", "Maza", "Arco", "Vara", "Varita" } },
 	{ image = "/game_rewardwall/images/icon-reward-xpboost", text = "30 minutos de Potenciador de XP del 50%" },
 	{ image = "/game_rewardwall/images/instant-reward-access-icon", text = "1 Acceso instant\225neo a recompensas" },
-	{ item = 28555, text = "Arma de entrenamiento de 500 cargas (a elegir)", choices = { "Espada", "Hacha", "Maza", "Arco", "Vara (rod)", "Varita (wand)" } },
+	{ item = 28555, text = "Arma de entrenamiento de 500 cargas (a elegir)", choices = { "Espada", "Hacha", "Maza", "Arco", "Vara", "Varita" } },
 	{ image = "/game_rewardwall/images/icon-reward-fixeditems", text = "Cofre VIP: 1 hora de Potenciador de XP, 5 Tibia Coins y 1 Acceso instant\225neo a recompensas" },
 }
 
@@ -84,13 +84,13 @@ local function updateVipPanel()
 	local reward = VIP_REWARDS[vipState.day]
 	local status
 	if not vipState.vip then
-		status = "Hazte VIP para desbloquear estas recompensas"
+		status = "Hazte VIP para desbloquear estas recompensas."
 	elseif not vipState.canClaim then
-		status = "Ya reclamaste la de hoy. Vuelve ma\241ana"
+		status = "Ya reclamaste la recompensa VIP de hoy. Vuelve ma\241ana."
 	elseif not vipState.atShrine then
-		status = "Recl\225mala en un santuario de recompensas"
+		status = "Recl\225mala en un santuario de recompensas."
 	else
-		status = string.format("Hoy (d\237a %d) puedes reclamarla", vipState.day)
+		status = string.format("Hoy puedes reclamar la recompensa del d\237a %d.", vipState.day)
 	end
 	panel.vipStatus:setText(status)
 
