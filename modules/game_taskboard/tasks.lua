@@ -50,17 +50,17 @@ TaskBoardController.soulsealEntries       = {}
 TaskBoardController.soulsealSearchText    = ""
 TaskBoardController.soulsealCategoryIndex = 1
 TaskBoardController.soulsealSelectedIndex = 0
-TaskBoardController.soulsealSelectedName  = "No creature selected"
+TaskBoardController.soulsealSelectedName  = "Ninguna criatura elegida"
 TaskBoardController.soulsealSelectedRaceId= 0
 TaskBoardController.soulsealSelectedOutfit= nil
 TaskBoardController.soulsealSelectedPoints= "0"
 TaskBoardController.soulsealSelectedDone  = false
 TaskBoardController.soulsealSelectedCanFight = false
 TaskBoardController.soulsealSelectedCategoryLabel = ""
-TaskBoardController.soulsealSelectedHint  = "Select a creature from the list."
+TaskBoardController.soulsealSelectedHint  = "Elige una criatura de la lista."
 TaskBoardController.soulsealHasSelection  = false
 TaskBoardController.soulsealHasEntries    = false
-TaskBoardController.soulsealEmptyText     = "No Soulseal creatures available."
+TaskBoardController.soulsealEmptyText     = "No hay criaturas de Soulseal disponibles."
 TaskBoardController.soulsealTopSpacerPxA  = 0
 TaskBoardController.soulsealTopSpacerPxB  = 0
 TaskBoardController.soulsealTopSpacerPxC  = 0
@@ -178,7 +178,7 @@ function TaskBoardController:onGameStart()
     })
 -- LuaFormatter on
     if not TaskBoardButton then
-        TaskBoardButton = modules.game_mainpanel.addToggleButton("taskHuntButton", tr("Task Hunt"),
+        TaskBoardButton = modules.game_mainpanel.addToggleButton("taskHuntButton", "Tablero de tareas",
             "/images/options/button_taskboard", function()
                 self:toggle()
             end, false, 1006)

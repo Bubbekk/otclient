@@ -12,10 +12,10 @@ WEEKLY_SECTIONS = 5
 -- Difficulties available for the weekly task board. The server does not send
 -- this table in the 15.21 protocol, so it lives client-side.
 WEEKLY_DIFFICULTIES = {
-    { id = 1, name = "Beginner", minLevel = 8 },
-    { id = 2, name = "Adept",    minLevel = 30 },
-    { id = 3, name = "Expert",   minLevel = 150 },
-    { id = 4, name = "Master",   minLevel = 300 }
+    { id = 1, name = "Principiante", minLevel = 8 },
+    { id = 2, name = "Adepto",    minLevel = 30 },
+    { id = 3, name = "Experto",   minLevel = 150 },
+    { id = 4, name = "Maestro",   minLevel = 300 }
 }
 
 -- Points rewarded per completed kill task, indexed by difficulty id.

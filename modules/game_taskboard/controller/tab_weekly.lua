@@ -5,7 +5,7 @@ local function getItemServerName(itemId)
     if thingType then
         return thingType:getName()
     end
-    return "Unknown Item"
+    return "Objeto desconocido"
 end
 
 local function countFinishedEntries(entries)
@@ -49,25 +49,25 @@ function TaskBoardController:refreshWeeklySummary()
     self.weeklyProgressPct = self:calcProgressWidth(totalCompleted)
     self.weeklyXpText = (maxExperience > 0) and
                             tr(
-            'Each kill task rewards you with %s XP and each delivery task will reward you with %s XP.',
+            'Cada tarea de caza te da %s XP y cada tarea de entrega te da %s XP.',
             comma_value(maxExperience), comma_value(maxDeliveryExperience)) or ""
 
-    self.weeklyProgressTooltip = string.format('Kill Tasks: %d\nDelivery Tasks: %d\nTotal: %d', completedKillTasks,
+    self.weeklyProgressTooltip = string.format('Tareas de caza: %d\nTareas de entrega: %d\nTotal: %d', completedKillTasks,
         completedDeliveryTasks, totalCompleted)
 
     self.weeklyRewardTokensTooltip = string.format(
-        'Hunting Task Points:\n\n   %d * %d  (Kill Tasks)\n+ %d * %d  (Delivery Tasks)\n--------------------------------------\n= %s  base points\nx %d  reward multiplier\n= %s  Hunting Task Points',
+        'Puntos de tareas:\n\n   %d * %d  (tareas de caza)\n+ %d * %d  (tareas de entrega)\n--------------------------------------\n= %s  puntos base\nx %d  multiplicador de recompensa\n= %s  Puntos de tareas',
         completedKillTasks, killTaskPoints, completedDeliveryTasks, deliveryTaskPoints,
         comma_value(killBase + deliveryBase), rewardMultiplier, comma_value(pointsEarned))
 
     self.weeklyRewardSealsTooltip = string.format(
-        'You receive %d Soulseal for each completed task. Soulseals can be\nused in the Soulpit. Click the obelisk there, then your character to\nopen a menu where you can select a creature you want to\nchallenge on your own.',
+        'Recibes %d Soulseal por cada tarea completada. Los Soulseals se usan\nen el Soulpit: haz clic en el obelisco y luego en tu personaje para\nabrir un men\250 donde elegir la criatura que quieres desafiar en solitario.',
         soulsealPointsPerTask)
 
     self.weeklyDifficultySummaryVisible = completedKillTasks > 0 or completedDeliveryTasks > 0
-    self.weeklyDifficultyKillSummary = string.format('You have completed %d / %d kill tasks.', completedKillTasks,
+    self.weeklyDifficultyKillSummary = string.format('Completaste %d / %d tareas de caza.', completedKillTasks,
         totalTaskSlots)
-    self.weeklyDifficultyDeliverySummary = string.format('You have completed %d / %d delivery tasks.',
+    self.weeklyDifficultyDeliverySummary = string.format('Completaste %d / %d tareas de entrega.',
         completedDeliveryTasks, totalTaskSlots)
     self.weeklyDifficultyPointsEarned = comma_value(pointsEarned)
     self.weeklyDifficultySealsEarned = comma_value(soulsealsEarned)
@@ -107,7 +107,7 @@ function TaskBoardController:onWeeklyServerData(header, monsters, items)
         m = type(m) == 'table' and m or {}
         local raceId = tonumber(m.raceId) or 0
         local raceData = raceId > 0 and g_things.getRaceData(raceId) or nil
-        local fullName = raceId == 0 and 'Any Creature' or ((raceData and raceData.name) or 'Unknown')
+        local fullName = raceId == 0 and 'Cualquier criatura' or ((raceData and raceData.name) or 'Desconocida')
         if raceId > 0 then
             fullName = fullName:capitalize()
         end
@@ -135,7 +135,7 @@ function TaskBoardController:onWeeklyServerData(header, monsters, items)
     for i, it in ipairs(items) do
         it = type(it) == 'table' and it or {}
         local itemId = tonumber(it.itemId) or 0
-        local itemName = itemId > 0 and (getItemServerName(itemId) or tostring(itemId)) or "Unknown Item"
+        local itemName = itemId > 0 and (getItemServerName(itemId) or tostring(itemId)) or "Objeto desconocido"
         local current = tonumber(it.current) or 0
         local total = tonumber(it.total) or 0
         local delivered = (tonumber(it.claimed) or 0) == 1
@@ -164,7 +164,7 @@ function TaskBoardController:onWeeklyServerData(header, monsters, items)
             name = d.name,
             minLevel = d.minLevel,
             canSelect = canSelect,
-            tooltip = (not canSelect) and string.format('The minimum level to start this difficulty is %d', d.minLevel) or
+            tooltip = (not canSelect) and string.format('El nivel m\237nimo para esta dificultad es %d', d.minLevel) or
                 nil
         })
     end
@@ -246,7 +246,7 @@ end
 
 function TaskBoardController:deliverItem(itemId, slotIndex)
     local parsedItemId = tonumber(itemId) or 0
-    local itemName = parsedItemId > 0 and (getItemServerName(parsedItemId) or tostring(parsedItemId)) or "Unknown Item"
+    local itemName = parsedItemId > 0 and (getItemServerName(parsedItemId) or tostring(parsedItemId)) or "Objeto desconocido"
     local msgBox
     local function yes()
         if msgBox then
@@ -261,7 +261,7 @@ function TaskBoardController:deliverItem(itemId, slotIndex)
             msgBox = nil
         end
     end
-    msgBox = displayGeneralBox(tr('Deliver Item'), tr('Do you want to deliver %s?', itemName), {{
+    msgBox = displayGeneralBox('Entregar objeto', tr('\191Quieres entregar %s?', itemName), {{
         text = tr('Yes'),
         callback = yes
     }, {
@@ -316,7 +316,7 @@ function TaskBoardController:showDeliveryItemMenu(itemId, itemName, mousePos)
             end
         end, 100, "showDeliveryItemCyclopedia")
     end)
-    menu:addOption(tr('Show in Market'), function()
+    menu:addOption(tr('Ver en el Market'), function()
         local market = modules.game_market
         if not market or not market.onShowRedirect then
             return

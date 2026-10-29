@@ -17,13 +17,13 @@ function TaskBoardController:onShopResult(itemId, result)
         return
     end
     local errorMessages = {
-        [SHOP_ERR_NOT_FOUND] = "Item not found.",
-        [SHOP_ERR_ALREADY_BOUGHT] = "Already purchased.",
-        [SHOP_ERR_NO_POINTS] = "Not enough Hunting Task Points.",
-        [SHOP_ERR_NEED_BASE] = "You need the base outfit first.",
-        [SHOP_ERR_STORE_INBOX] = "Store inbox error."
+        [SHOP_ERR_NOT_FOUND] = "Objeto no encontrado.",
+        [SHOP_ERR_ALREADY_BOUGHT] = "Ya lo compraste.",
+        [SHOP_ERR_NO_POINTS] = "No tienes suficientes Puntos de tareas.",
+        [SHOP_ERR_NEED_BASE] = "Primero necesitas el outfit base.",
+        [SHOP_ERR_STORE_INBOX] = "Error en el buz\243n de la Tienda."
     }
-    local msg = errorMessages[result] or ("Purchase failed (code " .. result .. ").")
+    local msg = errorMessages[result] or ("La compra fall\243 (c\243digo " .. result .. ").")
     local errBox
     local function close()
         if errBox then
@@ -31,8 +31,8 @@ function TaskBoardController:onShopResult(itemId, result)
             errBox = nil
         end
     end
-    errBox = displayGeneralBox(tr('Purchase Failed'), msg, {{
-        text = tr('Ok'),
+    errBox = displayGeneralBox('La compra fall\243', msg, {{
+        text = 'Aceptar',
         callback = close
     }}, close, close)
 end
@@ -52,7 +52,7 @@ function TaskBoardController:buyItem(itemId)
     if not item then
         return
     end
-    local msg = tr("Do you really want to buy '%s' for %s Hunting Task Points?", item.title, comma_value(item.price))
+    local msg = tr("\191Seguro que quieres comprar '%s' por %s Puntos de tareas?", item.title, comma_value(item.price))
     local function yes()
         g_game.taskHuntingShopPurchase(item.id)
         if confirmBox then
@@ -66,7 +66,7 @@ function TaskBoardController:buyItem(itemId)
             confirmBox = nil
         end
     end
-    confirmBox = displayGeneralBox(tr('Confirm Purchase'), msg, {{
+    confirmBox = displayGeneralBox('Confirmar compra', msg, {{
         text = tr('Yes'),
         callback = yes
     }, {

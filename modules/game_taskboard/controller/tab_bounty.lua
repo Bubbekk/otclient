@@ -49,7 +49,7 @@ function TaskBoardController:onBountyServerData(header, monsters, talisman)
         local isActive = tonumber(m.isActive) == 1
         local isCompleted = tonumber(m.isCompleted) == 1
         local raceData = raceId > 0 and g_things.getRaceData(raceId) or nil
-        local name = raceData and raceData.name or 'Unknown'
+        local name = raceData and raceData.name or 'Desconocida'
         name = name:capitalize()
         if #name > 20 then
             name = name:sub(1, 20) .. '...'
@@ -89,7 +89,7 @@ function TaskBoardController:onBountyServerData(header, monsters, talisman)
                 icon = TALISMAN_ICONS[i],
                 title = TALISMAN_TITLES[i],
                 current = string.format('Current: %s%%', formatPercent(currentValue)),
-                buttonText = isMaxed and 'MAX' or string.format('Upgrade to %s%%', formatPercent(nextValue)),
+                buttonText = isMaxed and 'MAX' or string.format('Mejorar a %s%%', formatPercent(nextValue)),
                 cost = isMaxed and '-' or tostring(upgradeCost),
                 statType = i - 1,
                 isMaxed = isMaxed,
@@ -145,8 +145,8 @@ function TaskBoardController:rerollMonsters()
             msgBox = nil
         end
     end
-    msgBox = displayGeneralBox(tr('Reroll Tasks'),
-        tr('Do you want to reroll your bounty tasks? This will consume 1 reroll token.'), {{
+    msgBox = displayGeneralBox('Cambiar tareas',
+        '\191Quieres cambiar tus tareas Bounty? Se gastar\225 1 Ficha de cambio.', {{
             text = tr('Yes'),
             callback = yes
         }, {
@@ -175,7 +175,7 @@ function TaskBoardController:claimReward()
             msgBox = nil
         end
     end
-    msgBox = displayGeneralBox(tr('Claim Reward'), tr('Claim reward for completing the bounty task?'), {{
+    msgBox = displayGeneralBox('Reclamar recompensa', '\191Reclamar la recompensa por completar la tarea Bounty?', {{
         text = tr('Yes'),
         callback = yes
     }, {
@@ -209,8 +209,8 @@ function TaskBoardController:claimDaily()
                 msgBox = nil
             end
         end
-        msgBox = displayGeneralBox(tr('Reroll Token Cap'), tr(
-            'You already have 10 reroll tokens. Claiming another will discard the oldest. Continue?'), {{
+        msgBox = displayGeneralBox('L\237mite de Fichas de cambio', tr(
+            'Ya tienes 10 Fichas de cambio. Si reclamas otra, se descartar\225 la m\225s antigua. \191Continuar?'), {{
             text = tr('Yes'),
             callback = yes
         }, {

@@ -10,12 +10,12 @@ local SOULSEAL_BIND_RETRY_DELAY_MS = 25
 local SOULSEAL_BIND_MAX_RETRIES = 20
 local SOULSEAL_SPACER_SEGMENT_PX = 20000
 local SOULSEAL_CATEGORY_LABELS = {
-    [1] = 'Harmless',
+    [1] = 'Inofensiva',
     [2] = 'Trivial',
-    [3] = 'Easy',
-    [4] = 'Medium',
-    [5] = 'Hard',
-    [6] = 'Challenging'
+    [3] = 'F\225cil',
+    [4] = 'Media',
+    [5] = 'Dif\237cil',
+    [6] = 'Desafiante'
 }
 local SOULSEAL_CATEGORY_FILTER_INDEX = {
     all = 1,
@@ -46,7 +46,7 @@ local function isSoulsealDone(value)
 end
 
 local function getSoulsealCategoryLabel(category)
-    return SOULSEAL_CATEGORY_LABELS[tonumber(category) or 0] or 'Unknown'
+    return SOULSEAL_CATEGORY_LABELS[tonumber(category) or 0] or 'Desconocida'
 end
 
 local function getSoulsealCategoryFilterIndex(event)
@@ -97,12 +97,12 @@ local function getSoulsealDisplayData(entry)
 
     local raceId = tonumber(entry.raceId) or 0
     local raceData = raceId > 0 and g_things.getRaceData(raceId) or nil
-    local displayName = entry.name or (raceData and raceData.name) or 'Unknown'
+    local displayName = entry.name or (raceData and raceData.name) or 'Desconocida'
     displayName = tostring(displayName)
     if displayName ~= '' then
         displayName = displayName:capitalize()
     else
-        displayName = 'Unknown'
+        displayName = 'Desconocida'
     end
     return raceId, displayName, raceData and raceData.outfit or nil
 end
@@ -116,12 +116,12 @@ local function normalizeSoulsealEntry(entry)
         raceData = g_things.getRaceData(raceId)
     end
 
-    local name = entry.name or (raceData and raceData.name) or (raceId > 0 and tostring(raceId) or 'Unknown')
+    local name = entry.name or (raceData and raceData.name) or (raceId > 0 and tostring(raceId) or 'Desconocida')
     name = tostring(name)
     if name ~= '' then
         name = name:capitalize()
     else
-        name = 'Unknown'
+        name = 'Desconocida'
     end
 
     local category = tonumber(entry.category)
@@ -409,15 +409,15 @@ function TaskBoardController:resetSoulsealState(clearCachedEntries)
     self.soulsealSelectedIndex = 0
     self.soulsealHasSelection = false
     self.soulsealHasEntries = false
-    self.soulsealSelectedName = 'No creature selected'
+    self.soulsealSelectedName = 'Ninguna criatura elegida'
     self.soulsealSelectedRaceId = 0
     self.soulsealSelectedOutfit = nil
     self.soulsealSelectedPoints = '0'
     self.soulsealSelectedDone = false
     self.soulsealSelectedCanFight = false
     self.soulsealSelectedCategoryLabel = ''
-    self.soulsealSelectedHint = 'Select a creature from the list.'
-    self.soulsealEmptyText = 'No Soulseal creatures available.'
+    self.soulsealSelectedHint = 'Elige una criatura de la lista.'
+    self.soulsealEmptyText = 'No hay criaturas de Soulseal disponibles.'
     self.soulsealTopSpacerPxA = 0
     self.soulsealTopSpacerPxB = 0
     self.soulsealTopSpacerPxC = 0
@@ -458,14 +458,14 @@ function TaskBoardController:updateSoulsealSelection()
     local entry = getSelectedSoulsealEntry(self)
     if not entry then
         self.soulsealHasSelection = false
-        self.soulsealSelectedName = 'No creature selected'
+        self.soulsealSelectedName = 'Ninguna criatura elegida'
         self.soulsealSelectedRaceId = 0
         self.soulsealSelectedOutfit = nil
         self.soulsealSelectedPoints = '0'
         self.soulsealSelectedDone = false
         self.soulsealSelectedCanFight = false
         self.soulsealSelectedCategoryLabel = ''
-        self.soulsealSelectedHint = 'Select a creature from the list.'
+        self.soulsealSelectedHint = 'Elige una criatura de la lista.'
         return
     end
 
@@ -485,11 +485,11 @@ function TaskBoardController:updateSoulsealSelection()
     self.soulsealSelectedCategoryLabel = getSoulsealCategoryLabel(getSoulsealCategory(entry))
 
     if done then
-        self.soulsealSelectedHint = 'Animus Mastery already unlocked for this creature.'
+        self.soulsealSelectedHint = 'Ya desbloqueaste Animus Mastery para esta criatura.'
     elseif canFight then
-        self.soulsealSelectedHint = 'Battle the chosen creature in the Soul Pit.'
+        self.soulsealSelectedHint = 'Lucha contra la criatura elegida en el Soul Pit.'
     else
-        self.soulsealSelectedHint = 'You do not have enough Soulseals to fight this creature.'
+        self.soulsealSelectedHint = 'No tienes suficientes Soulseals para luchar contra esta criatura.'
     end
 end
 
@@ -581,8 +581,8 @@ function TaskBoardController:rebuildSoulsealEntries()
 
     if #filtered == 0 then
         table.clear(filteredSoulsealEntries)
-        self.soulsealEmptyText = (#cachedSoulsealEntries == 0) and 'No Soulseal creatures available.' or
-                                     'No Soulseal creatures match the current filters.'
+        self.soulsealEmptyText = (#cachedSoulsealEntries == 0) and 'No hay criaturas de Soulseal disponibles.' or
+                                     'Ninguna criatura de Soulseal coincide con los filtros.'
         self:updateSoulsealSelection()
         return
     end
@@ -655,9 +655,9 @@ function TaskBoardController:fightSoulseal()
         end
     end
 
-    msgBox = displayGeneralBox(tr('Confirm'),
-        tr('Are you sure you want to fight "%s" for %d Soulseal points?', displayName, points), {{
-            text = tr('Ok'),
+    msgBox = displayGeneralBox('Confirmar',
+        tr('\191Seguro que quieres luchar contra "%s" por %d puntos de Soulseal?', displayName, points), {{
+            text = 'Aceptar',
             callback = yes
         }, {
             text = tr('Cancel'),

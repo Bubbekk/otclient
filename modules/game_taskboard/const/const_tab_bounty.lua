@@ -25,10 +25,10 @@ TALISMAN_ICONS = {
 }
 
 TALISMAN_TITLES = {
-    [1] = 'Damage Against\nCreatures',
-    [2] = 'Life Leech',
-    [3] = 'More Loot',
-    [4] = 'Chance for Double\nBeast Scroll Progress'
+    [1] = 'Da\241o contra\ncriaturas',
+    [2] = 'Robo de vida',
+    [3] = 'M\225s loot',
+    [4] = 'Probabilidad de doble\nprogreso de bestiario'
 }
 
 REROLL_TOKEN_CAP = 10

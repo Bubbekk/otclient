@@ -14,20 +14,20 @@
                 </div>
                 <select id="soulsealCategorySelect" class="soulsealCategorySelect"
                     onchange="self:changeSoulsealCategory(event)">
-                    <option value="1">All</option>
-                    <option value="2">Harmless</option>
-                    <option value="3">Trivial</option>
-                    <option value="4">Easy</option>
-                    <option value="5">Medium</option>
-                    <option value="6">Hard</option>
-                    <option value="7">Challenging</option>
+                    <option value="1">Todas</option>
+                    <option value="2">Inofensivas</option>
+                    <option value="3">Triviales</option>
+                    <option value="4">Fáciles</option>
+                    <option value="5">Medias</option>
+                    <option value="6">Difíciles</option>
+                    <option value="7">Desafiantes</option>
                 </select>
             </div>
 
             <div class="soulsealListFrame">
                 <div class="soulsealListHeaderRow">
-                    <label class="soulsealListHeaderLeft">Creatures</label>
-                    <label class="soulsealListHeaderCategory">Difficulty</label>
+                    <label class="soulsealListHeaderLeft">Criaturas</label>
+                    <label class="soulsealListHeaderCategory">Dificultad</label>
                     <label class="soulsealListHeaderRight">Soulseals</label>
                     <div class="soulsealHeaderSep VerticalSeparator"></div>
                 </div>
@@ -67,7 +67,7 @@
                     <label class="soulsealSelectedName" *visible="self.soulsealHasSelection">{{self.soulsealSelectedName}}</label>
                     <label class="soulsealSelectedCategory" *visible="self.soulsealHasSelection">{{self.soulsealSelectedCategoryLabel}}</label>
                     <button class="soulsealFightBtn" *enabled="self.soulsealSelectedCanFight"
-                        onclick="self:fightSoulseal()">Fight</button>
+                        onclick="self:fightSoulseal()">Luchar</button>
                     <div class="soulsealCostPanel">
                         <img class="soulsealBalanceIcon" src="/game_taskboard/assets/images/icon-currency-soulseals" />
                         <label class="soulsealBalanceLabel">{{self.soulsealSelectedPoints}}</label>
@@ -82,7 +82,7 @@
                 <img class="soulsealBalanceIcon" src="/game_taskboard/assets/images/icon-currency-soulseals" />
                 <label class="soulsealBalanceLabel">{{self.soulpitPoints}}</label>
             </div>
-            <button class="soulsealCloseBtn" onclick="self:hideSoulseal()" text="Cancel"></button>
+            <button class="soulsealCloseBtn" onclick="self:hideSoulseal()" text="Cancelar"></button>
         </div>
     </div>
 

@@ -112,7 +112,7 @@ function TaskBoardController:checkTracker()
         return
     end
     if not taskboardTrackerButton then
-        taskboardTrackerButton = modules.game_mainpanel.addToggleButton('taskboardTrackerButton', tr('Kill Tracker'),
+        taskboardTrackerButton = modules.game_mainpanel.addToggleButton('taskboardTrackerButton', 'Rastreador de caza',
             '/images/options/button_prey', function()
                 self:toggleTracker()
             end, false, 9)
@@ -180,7 +180,7 @@ end
 
 function Tracker.Prey.timeleftTranslation(timeleft)
     if timeleft == 0 then
-        return "Free"
+        return "Gratis"
     end
     local hours = string.format('%02.f', math.floor(timeleft / 3600))
     local mins = string.format('%02.f', math.floor(timeleft / 60 - (hours * 60)))
@@ -219,12 +219,12 @@ function Tracker.Prey.updateWidget(slot, state, currentHolderOutfit, preySlot, s
         trackerSlot.onClick = function()
             showCallback()
         end
-        trackerSlot:setTooltip(tr("Creature: %s\nDuration: %s\n\nClick in this window to open the prey dialog.",
+        trackerSlot:setTooltip(tr("Criatura: %s\nDuraci\243n: %s\n\nHaz clic en esta ventana para abrir la ventana de Prey.",
             preySlot.title:getText(), duration))
     else
         trackerSlot.creature:hide()
         trackerSlot.noCreature:show()
-        trackerSlot.creatureName:setText("Inactive")
+        trackerSlot.creatureName:setText("Inactivo")
         trackerSlot.time:setPercent(0)
         trackerSlot.preyAutoExtend:setImageSource(Tracker.Prey.getExtendIcon(preySlot.lockType))
         trackerSlot.preyType:setImageSource(Tracker.Prey.getSmallIconPath(preySlot.bonusType))
@@ -242,9 +242,9 @@ function Tracker.Prey.updateTimeLeft(slot, timeLeft)
     if not trackerSlot then
         return
     end
-    local tooltip = trackerSlot:getTooltip() or "Duration: \n"
-    local updated = string.gsub(tooltip, "[^\n]*Duration: [^\n]*\n?",
-        "Duration: " .. Tracker.Prey.timeleftTranslation(timeLeft) .. "\n")
+    local tooltip = trackerSlot:getTooltip() or "Duraci\243n: \n"
+    local updated = string.gsub(tooltip, "[^\n]*Duraci\243n: [^\n]*\n?",
+        "Duraci\243n: " .. Tracker.Prey.timeleftTranslation(timeLeft) .. "\n")
     trackerSlot:setTooltip(updated)
     local percent = (timeLeft / (2 * 60 * 60)) * 100
     trackerSlot.time:setPercent(percent)
@@ -270,10 +270,10 @@ function Tracker.Bounty.setInactive()
     end
     slot.creature:hide()
     slot.noCreature:show()
-    slot.creatureName:setText("Inactive")
+    slot.creatureName:setText("Inactivo")
     slot.time:setPercent(0)
     slot.time:setBackgroundColor("#555555")
-    slot:setTooltip("No active Bounty Task.\n\nClick to open the Bounty Task panel.")
+    slot:setTooltip("Sin tarea Bounty activa.\n\nHaz clic para abrir el panel de tareas Bounty.")
     slot.onClick = function()
         TaskBoardController:toggle()
     end
@@ -291,7 +291,7 @@ function Tracker.Bounty.setActive(name, outfit, killCount, killTarget)
     local percent = killTarget > 0 and (killCount / killTarget) * 100 or 0
     slot.time:setPercent(percent)
     slot.time:setBackgroundColor("#C28400")
-    slot:setTooltip(tr("Bounty Task: %s\nProgress: %d/%d kills\n\nClick to open the Bounty Task panel.", name, killCount,
+    slot:setTooltip(tr("Tarea Bounty: %s\nProgreso: %d/%d muertes\n\nHaz clic para abrir el panel de tareas Bounty.", name, killCount,
         killTarget))
     slot.onClick = function()
         TaskBoardController:toggle()
@@ -309,7 +309,7 @@ function Tracker.Bounty.setCompleted(name, outfit, killCount, killTarget)
     slot.creatureName:setText(short_text(name, 12))
     slot.time:setPercent(100)
     slot.time:setBackgroundColor("#00AA00")
-    slot:setTooltip(tr("Bounty Task: %s\nProgress: %d/%d kills\nCompleted! Click to claim your reward.", name, killCount,
+    slot:setTooltip(tr("Tarea Bounty: %s\nProgreso: %d/%d muertes\n\161Completada! Haz clic para reclamar tu recompensa.", name, killCount,
         killTarget))
     slot.onClick = function()
         TaskBoardController:toggle()
@@ -318,7 +318,7 @@ end
 
 function Tracker.Bounty.onKillUpdate(raceId, currentKills, totalKills, isCompleted)
     local raceData = g_things.getRaceData(raceId)
-    local name = raceData and raceData.name or 'Unknown'
+    local name = raceData and raceData.name or 'Desconocida'
     name = name:capitalize()
     local outfit = raceData and raceData.outfit or {}
     if isCompleted == 1 then
@@ -356,7 +356,7 @@ function Tracker.Weekly.setSlotInactive(index)
     slot.creature:hide()
     slot.anyCreatureIcon:hide()
     slot.noCreature:show()
-    slot.creatureName:setText("Inactive")
+    slot.creatureName:setText("Inactivo")
     slot.time:setPercent(0)
     slot.time:setBackgroundColor("#555555")
     slot:setVisible(false)
@@ -371,7 +371,7 @@ function Tracker.Weekly.setSlotActive(index, raceId, name, outfit, currentKills,
         slot.creature:hide()
         slot.anyCreatureIcon:show()
         slot.noCreature:hide()
-        slot.creatureName:setText("Any Creature")
+        slot.creatureName:setText("Cualquier criatura")
     else
         slot.creature:setOutfit(outfit)
         slot.creature:show()
@@ -382,7 +382,7 @@ function Tracker.Weekly.setSlotActive(index, raceId, name, outfit, currentKills,
     local percent = totalKills > 0 and (currentKills / totalKills) * 100 or 0
     slot.time:setPercent(percent)
     slot.time:setBackgroundColor("#C28400")
-    slot:setTooltip(tr("Weekly Task: %s\nProgress: %d/%d kills", name, currentKills, totalKills))
+    slot:setTooltip(tr("Tarea semanal: %s\nProgreso: %d/%d muertes", name, currentKills, totalKills))
     slot:setVisible(true)
     slot.onClick = function()
         TaskBoardController:show()
@@ -399,7 +399,7 @@ function Tracker.Weekly.setSlotCompleted(index, raceId, name, outfit, currentKil
         slot.creature:hide()
         slot.anyCreatureIcon:show()
         slot.noCreature:hide()
-        slot.creatureName:setText("Any Creature")
+        slot.creatureName:setText("Cualquier criatura")
     else
         slot.creature:setOutfit(outfit)
         slot.creature:show()
@@ -409,7 +409,7 @@ function Tracker.Weekly.setSlotCompleted(index, raceId, name, outfit, currentKil
     end
     slot.time:setPercent(100)
     slot.time:setBackgroundColor("#00AA00")
-    slot:setTooltip(tr("Weekly Task: %s\nProgress: %d/%d kills\nCompleted!", name, currentKills, totalKills))
+    slot:setTooltip(tr("Tarea semanal: %s\nProgreso: %d/%d muertes\n\161Completada!", name, currentKills, totalKills))
     slot:setVisible(true)
     slot.onClick = function()
         TaskBoardController:show()
@@ -440,11 +440,11 @@ function Tracker.Weekly.loadFromServerData(monsters)
         local current = tonumber(m.current) or 0
         local total = tonumber(m.total) or 0
         local finished = (tonumber(m.state) or 0) == 1
-        local name = "Any Creature"
+        local name = "Cualquier criatura"
         local outfit = {}
         if raceId > 0 then
             local rd = g_things.getRaceData(raceId)
-            name = rd and rd.name or 'Unknown'
+            name = rd and rd.name or 'Desconocida'
             name = name:capitalize()
             outfit = rd and rd.outfit or {}
         end

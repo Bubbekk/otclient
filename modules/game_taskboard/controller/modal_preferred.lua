@@ -154,14 +154,14 @@ function TaskBoardController:rebuildPreferredSlots()
         local prefName, prefOutfit, unwName, unwOutfit
         if preferredId > 0 then
             local rd = g_things.getRaceData(preferredId)
-            prefName = rd and rd.name and rd.name:capitalize() or 'Unknown'
+            prefName = rd and rd.name and rd.name:capitalize() or 'Desconocida'
             prefOutfit = rd and rd.outfit or nil
         else
             prefName = 'Empty'
         end
         if unwantedId > 0 then
             local rd = g_things.getRaceData(unwantedId)
-            unwName = rd and rd.name and rd.name:capitalize() or 'Unknown'
+            unwName = rd and rd.name and rd.name:capitalize() or 'Desconocida'
             unwOutfit = rd and rd.outfit or nil
         else
             unwName = 'Empty'
@@ -173,7 +173,7 @@ function TaskBoardController:rebuildPreferredSlots()
 
         table.insert(result, {
             slotNum = slotNum,
-            slotTitle = slotNum == 1 and 'Main Slot' or 'Additional Slots',
+            slotTitle = slotNum == 1 and 'Espacio principal' or 'Espacios adicionales',
             unlocked = unlocked and 1 or 0,
             locked = unlocked and 0 or 1,
             lockPrice = lockPrice,
@@ -193,8 +193,8 @@ function TaskBoardController:rebuildPreferredSlots()
             showUnwantedAssign = hasUnwanted and 0 or 1,
             showUnwantedClear = hasUnwanted and 1 or 0,
             actionCost = actionCost,
-            preferredButtonText = hasPreferred and 'Clear' or 'Assign',
-            unwantedButtonText = hasUnwanted and 'Clear' or 'Assign',
+            preferredButtonText = hasPreferred and 'Quitar' or 'Asignar',
+            unwantedButtonText = hasUnwanted and 'Quitar' or 'Asignar',
             preferredAction = hasPreferred and 'clearPreferred' or 'assignPreferred',
             unwantedAction = hasUnwanted and 'clearUnwanted' or 'assignUnwanted',
             canPreferredAct = hasPreferred or canAssign,
@@ -461,7 +461,7 @@ function TaskBoardController:rebuildAvailableMonsters()
     for _, raceId in ipairs(cachedAllRaceIds) do
         if not usedIds[raceId] then
             local rd = g_things.getRaceData(raceId)
-            local name = rd and rd.name or 'Unknown'
+            local name = rd and rd.name or 'Desconocida'
             name = name:capitalize()
             if filter == '' or name:lower():find(filter, 1, true) then
                 table.insert(sorted, {
@@ -596,8 +596,8 @@ function TaskBoardController:clearPreferred(slotNum, cost)
             msgBox = nil
         end
     end
-    msgBox = displayGeneralBox(tr('Clear Preferred'),
-        tr('Remove preferred monster? This costs %d Bounty Task Points.', parsedCost), {{
+    msgBox = displayGeneralBox('Quitar preferida',
+        tr('\191Quitar la criatura preferida? Cuesta %d Puntos de tareas Bounty.', parsedCost), {{
             text = tr('Yes'),
             callback = yes
         }, {
@@ -630,8 +630,8 @@ function TaskBoardController:clearUnwanted(slotNum, cost)
             msgBox = nil
         end
     end
-    msgBox = displayGeneralBox(tr('Clear Unwanted'),
-        tr('Remove unwanted monster? This costs %d Bounty Task Points.', parsedCost), {{
+    msgBox = displayGeneralBox('Quitar no deseada',
+        tr('\191Quitar la criatura no deseada? Cuesta %d Puntos de tareas Bounty.', parsedCost), {{
             text = tr('Yes'),
             callback = yes
         }, {
@@ -661,8 +661,8 @@ function TaskBoardController:buyPreferredSlot(slotNum, price)
             msgBox = nil
         end
     end
-    msgBox = displayGeneralBox(tr('Unlock Slot'),
-        tr('Unlock this preferred slot for %d Bounty Task Points?', parsedPrice), {{
+    msgBox = displayGeneralBox('Desbloquear espacio',
+        tr('\191Desbloquear este espacio de preferidas por %d Puntos de tareas Bounty?', parsedPrice), {{
             text = tr('Yes'),
             callback = yes
         }, {

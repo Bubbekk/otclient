@@ -1,7 +1,7 @@
 <link href="template/css/modal_preferred.css" />
 
 <html>
-<window id="preferredWindow" class="prefWindow" placement="center" title="Preferred List" onescape="self:hidePreferred()">
+<window id="preferredWindow" class="prefWindow" placement="center" title="Lista de preferidas" onescape="self:hidePreferred()">
 
     <div class="prefBody">
 
@@ -30,14 +30,14 @@
         <div class="prefRightPanel" style="float:right;">
             <div class="slotsHeader">
                 <div class="slotsHeaderEntry" style="float:left; margin-left: 20px">
-                    <label class="slotsHeaderLabel">Preferred</label>
+                    <label class="slotsHeaderLabel">Preferidas</label>
                     <img class="slotsHelpIcon" src="/images/skin/show-gui-help-grey"
-                        *tooltip="'Preferred creatures are 5x more likely to appear when rolling tasks.'" />
+                        *tooltip="'Las criaturas preferidas tienen 5 veces m\225s probabilidad de salir al generar tareas.'" />
                 </div>
                 <div class="slotsHeaderEntry" style="float:right; margin-right: -40px">
-                    <label class="slotsHeaderLabel">Unwanted</label>
+                    <label class="slotsHeaderLabel">No deseadas</label>
                     <img class="slotsHelpIcon" src="/images/skin/show-gui-help-grey"
-                        *tooltip="'Unwanted creatures will never appear when rolling tasks.'" />
+                        *tooltip="'Las criaturas no deseadas nunca saldr\225n al generar tareas.'" />
                 </div>
             </div>
             <div class="slotsSep"></div>
@@ -49,8 +49,8 @@
                     <label class="slotLockedTitle">{{slot.slotTitle}}</label>
                     <div class="slotUnlockRow">
                         <button class="slotUnlockBtn" *visible="slot.canUnlock"
-                            onclick="self:buyPreferredSlot(slot.slotNum, slot.lockPrice)">Unlock</button>
-                        <button class="slotUnlockBtn" disabled="true" *visible="not slot.canUnlock">Unlock</button>
+                            onclick="self:buyPreferredSlot(slot.slotNum, slot.lockPrice)">Desbloquear</button>
+                        <button class="slotUnlockBtn" disabled="true" *visible="not slot.canUnlock">Desbloquear</button>
                         <div class="TaskBoardSmallResource slotUnlockCostBox">
                             <img class="slotCostIcon" src="/game_taskboard/assets/images/icon-currency-bountypoints" />
                             <label class="slotCostLabel">{{slot.lockPrice}}</label>
@@ -98,7 +98,7 @@
     </div><!-- /prefBody -->
 
     <div class="prefFooter">
-        <button class="prefCloseBtn" onclick="self:hidePreferred()" text="Close"></button>
+        <button class="prefCloseBtn" onclick="self:hidePreferred()" text="Cerrar"></button>
     </div>
 
 </window>
