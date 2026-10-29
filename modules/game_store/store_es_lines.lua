@@ -203,3 +203,6 @@ ES.messages["Twist of Fate is not available on this world."] = "Giro del destino
 ES.names["Arctic Unicorn"] = "Unicornio ártico"
 ES.names["Tangerine Flecked Koi"] = "Koi moteado mandarina"
 ES.names["Ferumbras Bust"] = "Busto de Ferumbras"
+ES.messages["You can't use temple teleport in a no-logout zone."] = "No puedes usar el teletransporte al templo en una zona sin cierre de sesión."
+ES.messages["You are already close to your home temple."] = "Ya estás cerca de tu templo."
+ES.messages["You already have a gold pouch."] = "Ya tienes una bolsa de oro."
