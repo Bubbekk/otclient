@@ -212,3 +212,4 @@ ES.lines["- bestiary kills count 5x instead of 3x"] = "- las muertes del bestiar
 ES.lines["- exclusive VIP daily rewards in the reward wall"] = "- recompensas diarias VIP exclusivas en el muro de recompensas"
 ES.lines["- access to the Wheel of Destiny"] = "- acceso a la Wheel of Destiny"
 ES.lines["- +1 forge dust from influenced and fiendish creatures"] = "- +1 de polvo de forja por criaturas influenciadas y fiendish"
+ES.lines["- exercise weapon training 10x faster"] = "- entrenamiento con armas de entrenamiento x10 más rápido"
