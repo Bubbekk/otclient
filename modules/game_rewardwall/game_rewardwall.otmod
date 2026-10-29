@@ -3,7 +3,7 @@ Module
   description: game_rewardwall
   author: game_rewardwall
   website: game_rewardwall
-  scripts: [ game_rewardwall.lua ]
+  scripts: [ game_rewardwall.lua, vip_rewards.lua ]
   sandboxed: true
   @onLoad: rewardWallController:init()
   @onUnload: rewardWallController:terminate()

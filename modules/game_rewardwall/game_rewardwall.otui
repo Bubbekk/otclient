@@ -3,7 +3,7 @@ MainWindowHigh
   !text: tr('Muro de recompensas')
   font: $var-cip-font-new
   color: #909090
-  size: 538 522
+  size: 538 633
   text-offset: 0 2
   @onEscape: modules.game_rewardwall.rewardWallController:onClickToggle()
 
@@ -397,6 +397,60 @@ MainWindowHigh
       image-source: /game_rewardwall/images/icon-rewardarrow-loop-inactive
       image-offset: -466 90
       image-size: 435 13
+
+  MiniPanel
+    id: vipRewardsPanel
+    !text: tr('Recompensas VIP')
+    text-offset: -1 2
+    font: $var-cip-font-new
+    color: #e0b030
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    size: 506 100
+    margin-top: 11
+
+    Panel
+      id: vipSlots
+      anchors.top: parent.top
+      anchors.left: parent.left
+      size: 382 76
+      margin-top: -2
+      layout:
+        type: horizontalBox
+        spacing: 4
+
+    Label
+      id: vipStatus
+      anchors.top: parent.top
+      anchors.left: vipSlots.right
+      anchors.right: parent.right
+      margin-left: 6
+      margin-top: -2
+      height: 30
+      text-wrap: true
+      text-align: center
+      font: $var-cip-font-new
+      color: #c0c0c0
+
+    QtComboBox
+      id: vipChoice
+      anchors.top: vipStatus.bottom
+      anchors.left: vipSlots.right
+      anchors.right: parent.right
+      margin-left: 6
+      margin-top: 2
+      mouse-scroll: false
+      visible: false
+
+    Button
+      id: vipClaimButton
+      !text: tr('Reclamar')
+      anchors.bottom: vipSlots.bottom
+      anchors.left: vipSlots.right
+      anchors.right: parent.right
+      margin-left: 6
+      height: 20
+      @onClick: modules.game_rewardwall.vipRewardsClaim()
 
   QtPanel
     id: premiumStatus

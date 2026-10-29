@@ -996,6 +996,7 @@ local function onOpenRewardWall(bonusShrines, nextRewardTime, dayStreakDay, wasD
 	updateDailyRewards(dayStreakDay, wasDailyRewardTaken, nextRewardTime, canGetReward, timeLeft)
 	premiumStatusWindwos(g_game.getLocalPlayer():isPremium())
 	rewardWallController.ui:show()
+	vipRewardsRequestState()
 
 	if not quietRefresh then
 		rewardWallController.ui:raise()
@@ -1272,9 +1273,11 @@ function rewardWallController:onInit()
 		onParseStoreGetPurchaseStatus = onStorePurchaseComplete
 	})
 	setupRewardWallUi()
+	vipRewardsInit()
 end
 
 function rewardWallController:onTerminate()
+	vipRewardsTerminate()
 	stopDailyRewardSlotTimer()
 	stopRestingAreaTimer()
 
@@ -1298,6 +1301,7 @@ function rewardWallController:onGameStart()
 end
 
 function rewardWallController:onGameEnd()
+	vipRewardsReset()
 	stopDailyRewardSlotTimer()
 	stopRestingAreaTimer()
 	disconnectOnServerError()
