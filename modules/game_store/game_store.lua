@@ -15,6 +15,36 @@ local bannersHome = {}
 
 local currentIndex = 1
 
+-- Traducción al español (store_es*.lua). Si falla la carga, la tienda sigue en inglés.
+local okEs, errEs = pcall(dofile, 'store_es')
+if not okEs then
+    StoreES = nil
+    g_logger.warning("[game_store] No se pudo cargar la traducción al español: " .. tostring(errEs))
+end
+
+local function esTranslate(kind, text)
+    if not StoreES or type(text) ~= "string" then return text end
+    local ok, result = pcall(StoreES[kind], text)
+    if ok and result then return result end
+    return text
+end
+
+local function esText(text)
+    if StoreES and StoreES.latin1 then return StoreES.latin1(text) end
+    return text
+end
+
+local function esPrice(price)
+    if price == 0 then return esText("Gratis") end
+    return price
+end
+
+local function esName(text) return esTranslate("name", text) end
+local function esCategory(text) return esTranslate("category", text) end
+local function esMessage(text) return esTranslate("message", text) end
+local function esLine(text) return esTranslate("line", text) end
+local function esTag(text) return esTranslate("tag", text) end
+
 -- /*=============================================
 -- =            To-do                  =
 -- =============================================*/
@@ -215,13 +245,14 @@ local function addDescriptionLine(container, lineText, color)
             iconWidget:setImageSource(STORE_ICON_PATH)
             iconWidget:setImageClip(info.clip)
         end
-        local tagText = (cap and info.text:format(cap)) or info.text
-        local rest    = lineText:sub(tagEnd + 1):match("^%s*(.-)%s*$")
+        local translatedTag = esTag(info.text)
+        local tagText = (cap and translatedTag:format(cap)) or translatedTag
+        local rest    = esLine(lineText:sub(tagEnd + 1):match("^%s*(.-)%s*$"))
         textWidget:setMarginLeft(16)
         textWidget:setText(tagText ~= "" and (tagText .. " " .. rest) or rest)
     else
         textWidget:setMarginLeft(0)
-        textWidget:setText(lineText:match("^%s*(.-)%s*$"))
+        textWidget:setText(esLine(lineText:match("^%s*(.-)%s*$")))
     end
 
     widget:setHeight(math.max(14, textWidget:getTextSize().height + 2))
@@ -289,7 +320,7 @@ local function fixServerNoSend0xF2()
     
             if transfer ~= transferBalance then
                 controllerShop.ui.lblCoins.lblTibiaTransfer:setText(
-                    string.format("(Including: %s", formatNumberWithCommas(transferBalance))
+                    string.format(esMessage("(Including: ") .. "%s", formatNumberWithCommas(transferBalance))
                 )
             end
             local packet2 = GameStore.SendingPackets.S_CoinBalanceUpdating
@@ -441,7 +472,7 @@ local function createSubWidget(parent, subId, subButton)
     local subWidget = g_ui.createWidget("storeCategory", parent)
     subWidget:setId(subId)
     setImagenHttp(subWidget.Button.Icon, subButton.icon, true)
-    subWidget.Button.Title:setText(subButton.text)
+    subWidget.Button.Title:setText(esCategory(subButton.text))
     subWidget:setVisible(false)
     subWidget.open = subButton.open
     subWidget:setMarginLeft(15)
@@ -491,7 +522,7 @@ function controllerShop:onInit()
 
     for k, v in pairs({{'Most Popular Fist', 'MostPopularFist'}, {'Alphabetically', 'Alphabetically'},
                        {'Newest Fist', 'NewestFist'}}) do
-        controllerShop.ui.panelItem.comboBoxContainer.MostPopularFirst:addOption(v[1], v[2])
+        controllerShop.ui.panelItem.comboBoxContainer.MostPopularFirst:addOption(esMessage(v[1]), v[2])
     end
 
     controllerShop.ui.transferPoints.onClick = transferPoints
@@ -543,7 +574,7 @@ end
 function onParseStoreGetCoin(getTibiaCoins, getTransferableCoins)
     a0xF2 = false
     controllerShop.ui.lblCoins.lblTibiaCoins:setText(formatNumberWithCommas(getTibiaCoins))
-    controllerShop.ui.lblCoins.lblTibiaTransfer:setText(string.format("(Including: %s",
+    controllerShop.ui.lblCoins.lblTibiaTransfer:setText(string.format(esMessage("(Including: ") .. "%s",
         formatNumberWithCommas(getTransferableCoins)))
 end
 
@@ -558,7 +589,7 @@ function onParseStoreGetPurchaseStatus(purchaseStatus)
     destroyWindow({processingWindow, messageBox})
     controllerShop.ui:hide()
     messageBox = g_ui.createWidget('confirmarSHOP', g_ui.getRootWidget())
-    messageBox.Box:setText(purchaseStatus)
+    messageBox.Box:setText(esMessage(purchaseStatus))
     messageBox.buttonAnimation.animation:setImageClip("0 0 108 108")
     messageBox.buttonAnimation.onClick = function(widget)
         messageBox.buttonAnimation:disable()
@@ -590,11 +621,11 @@ end
 function onParseStoreCreateProducts(storeProducts)
     local comboBox = controllerShop.ui.panelItem.comboBoxContainer.showAll
     comboBox:clearOptions()
-    comboBox:addOption("Disable", 0)
+    comboBox:addOption(esMessage("Disable"), 0)
 
     if #storeProducts.menuFilter > 0 then
         for k, t in pairs(storeProducts.menuFilter) do
-            comboBox:addOption(t, k - 1)
+            comboBox:addOption(esMessage(t), k - 1)
         end
 --[[         comboBox.onOptionChange = function(a, b, c, d)
             pdump(a:getCurrentOption())
@@ -606,12 +637,30 @@ function onParseStoreCreateProducts(storeProducts)
     if not storeProducts then
         return
     end
+    -- El servidor envía las ofertas sin orden fijo: se muestran de menor a mayor precio
+    local function lowestPrice(product)
+        local lowest = product.price or math.huge
+        for _, subOffer in ipairs(product.subOffers or {}) do
+            if subOffer.price and subOffer.price < lowest then
+                lowest = subOffer.price
+            end
+        end
+        return lowest
+    end
+    table.sort(storeProducts.offers, function(a, b)
+        local pa, pb = lowestPrice(a), lowestPrice(b)
+        if pa ~= pb then
+            return pa < pb
+        end
+        return tostring(a.name) < tostring(b.name)
+    end)
+
     for _, product in ipairs(storeProducts.offers) do
         local row = g_ui.createWidget('RowStore', listProduct)
         row.product, row.type = product, product.type
 
         local nameLabel = row:getChildById('lblName')
-        nameLabel:setText(product.name)
+        nameLabel:setText(esName(product.name))
         nameLabel:setTextAlign(AlignCenter)
         nameLabel:setMarginRight(10)
 
@@ -624,7 +673,7 @@ function onParseStoreCreateProducts(storeProducts)
                 row:setOpacity(0.5)
             end
             local priceLabel = offerI:getChildById('lblPrice')
-            priceLabel:setText(subOffer.price)
+            priceLabel:setText(esPrice(subOffer.price))
 
             if subOffer.count and subOffer.count > 0 then
                 offerI:getChildById('count'):setText(subOffer.count .. "x")
@@ -679,13 +728,13 @@ function onParseStoreCreateHome(offer)
         row.product, row.type = product, product.type
 
         local nameLabel = row:getChildById('lblName')
-        nameLabel:setText(product.name)
+        nameLabel:setText(esName(product.name))
         nameLabel:setTextAlign(AlignCenter)
         nameLabel:setMarginRight(10)
         
         local subOfferWidget = g_ui.createWidget('stackOfferPanel', row:getChildById('StackOffers'))
 
-        subOfferWidget.lblPrice:setText(product.price)
+        subOfferWidget.lblPrice:setText(esPrice(product.price))
         if product.coinType == GameStore.CoinType.Transferable then
             subOfferWidget.lblPrice:setIcon("/game_store/images/icon-tibiacointransferable")
         end
@@ -711,17 +760,17 @@ function onParseStoreGetHistory(currentPage, pageCount, historyData)
     headerRow:setBackgroundColor("#363636")
     headerRow:setBorderColor("#00000077")
     headerRow:setBorderWidth(1)
-    headerRow.date:setText("Date")
-    headerRow.Balance:setText("Balance")
-    headerRow.Description:setText("Description")
-    controllerShop.ui.transferHistory.lblPage:setText(string.format("Page %d/%d", currentPage + 1, pageCount))
+    headerRow.date:setText(esMessage("Date"))
+    headerRow.Balance:setText(esMessage("Balance"))
+    headerRow.Description:setText(esMessage("Description"))
+    controllerShop.ui.transferHistory.lblPage:setText(esMessage(string.format("Page %d/%d", currentPage + 1, pageCount)))
     for i, data in ipairs(historyData) do
         local row = g_ui.createWidget("historyData2", transferHistory)
         row.date:setText(convert_timestamp(data[1]))
         local balance = data[3]
         row.Balance:setText(formatNumberWithCommas(balance))
         row.Balance:setColor(balance < 0 and "#D33C3C" or "#3CD33C")
-        row.Description:setText(data[5])
+        row.Description:setText(esMessage(data[5]))
         row.Balance:setIcon(data[4] == GameStore.CoinType.Transferable and 
                             "/game_store/images/icon-tibiacointransferable" or 
                             "images/ui/tibiaCoin")
@@ -797,7 +846,7 @@ function onParseStoreGetCategories(buttons)
                 setImagenHttp(widget.Button.Icon, "/13/" .. category.icons[1], true)
             end
 
-            widget.Button.Title:setText(category.name)
+            widget.Button.Title:setText(esCategory(category.name))
             widget.open = category.name
 
             if #category.subCategories > 0 then
@@ -886,7 +935,7 @@ end
 
 function onParseStoreError(errorMessage)
     destroyWindow(processingWindow)
-    displayErrorBox(controllerShop.ui:getText(), errorMessage)
+    displayErrorBox(controllerShop.ui:getText(), esMessage(errorMessage))
 end
 
 -- /*=============================================
@@ -940,7 +989,7 @@ function getCoinsWebsite()
     if GameStore.website.WEBSITE_GETCOINS ~= "" then
         g_platform.openUrl(GameStore.website.WEBSITE_GETCOINS)
     else
-        sendMessageBox("Error", "No data for store URL.")
+        sendMessageBox(esMessage("Error"), esMessage("No data for store URL."))
     end
 end
 -- /*=============================================
@@ -979,7 +1028,7 @@ function chooseOffert(self, focusedChild)
 
     local product = focusedChild.product
     local panel = controllerShop.ui.panelItem
-    panel:getChildById('lblName'):setText(product.name)
+    panel:getChildById("lblName"):setText(esName(product.name))
     local description = product.description or ""
     local subOffers = product.subOffers or {}
     if not table.empty(subOffers) then
@@ -1007,15 +1056,15 @@ function chooseOffert(self, focusedChild)
         local offerPanel = g_ui.createWidget('OfferPanel2', offerStackPanel)
 
         local priceLabel = offerPanel:getChildById('lblPrice')
-        priceLabel:setText(offer.price)
+        priceLabel:setText(esPrice(offer.price))
 
         local itemCount = (offer.count and offer.count > 0) and offer.count or 1
         if itemCount > 1 then
-            offerPanel:getChildById('btnBuy'):setText("Buy " .. itemCount .. "x")
+            offerPanel:getChildById('btnBuy'):setText(esMessage("Buy " .. itemCount .. "x"))
         end
 
         if product.configurable then
-            offerPanel:getChildById('btnBuy'):setText("Configurable")
+            offerPanel:getChildById('btnBuy'):setText(esMessage("Configurable"))
         end
 
         local isTransferable = offer.coinType == GameStore.CoinType.Transferable
@@ -1040,7 +1089,7 @@ function chooseOffert(self, focusedChild)
             btnBuy:disable()
             btnBuy:setOpacity(0.8)
             renderDescription(panel, description,
-                "The product is currently not available for this character. See the buy button tooltip for details.")
+                esMessage("The product is currently not available for this character. See the buy button tooltip for details."))
             if offer.reasonIdDisable then
                 local tooltipOverlay = g_ui.createWidget('UIWidget', offerPanel)
                 tooltipOverlay:setId('tooltipOverlay')
@@ -1049,8 +1098,8 @@ function chooseOffert(self, focusedChild)
                 tooltipOverlay:setPosition(btnBuy:getPosition())
                 local reasonText = oldProtocol and offer.reasonIdDisable or reasonCategory[offer.reasonIdDisable + 1]
                 tooltipOverlay:parseColoreDisplayToolTip(string.format(
-                    "[color=#ff0000]The product is not available for this character:\n\n- %s[/color]",
-                    reasonText
+                    "[color=#ff0000]" .. esMessage("The product is not available for this character:") .. "\n\n- %s[/color]",
+                    esMessage(reasonText)
                 ))
                 tooltipOverlay:setOpacity(0)
                 tooltipOverlay:addAnchor(AnchorLeft, btnBuy:getId(), AnchorLeft)
@@ -1069,7 +1118,7 @@ function chooseOffert(self, focusedChild)
             end
 
             if product.name == "Hireling Apprentice" then
-                return displayErrorBox(controllerShop.ui:getText(), "not yet, UI missing")
+                return displayErrorBox(controllerShop.ui:getText(), esMessage("not yet, UI missing"))
             end
 
             local function acceptFunc()
@@ -1082,8 +1131,8 @@ function chooseOffert(self, focusedChild)
                     local closeWindow = function() destroyWindow(processingWindow) end
                     controllerShop.ui:hide()
                     processingWindow = displayGeneralBox(
-                        'Processing purchase.', 
-                        'Your purchase is being processed',
+                        esMessage('Processing purchase.'),
+                        esMessage('Your purchase is being processed'),
                         {
                           { text = tr('ok'),  callback = closeWindow },
                           anchor = 50
@@ -1101,19 +1150,19 @@ function chooseOffert(self, focusedChild)
                 destroyWindow(acceptWindow)
             end
 
-            local coinType = isTransferable and "transferable coins" or "regular coins"
+            local coinType = esMessage(isTransferable and "transferable coins" or "regular coins")
             local confirmationMessage = string.format(
-                'Do you want to buy the product "%s" for %d %s?', 
-                product.name, 
-                offer.price, 
+                esText('¿Quieres comprar el producto "%s" por %d %s?'),
+                esName(product.name),
+                offer.price,
                 coinType
             )
 
             local itemCountConfirm = (offer.count and offer.count > 0) and offer.count or 1
             local detailsMessage = string.format(
-                "%dx %s\nPrice: %d %s",
+                esText("%dx %s\nPrecio: %d %s"),
                 itemCountConfirm,
-                product.name,
+                esName(product.name),
                 offer.price,
                 coinType
             )

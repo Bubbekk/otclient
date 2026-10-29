@@ -75,7 +75,7 @@ StoreWindow
     margin-top: 10
     color: #c0c0c0
     font: verdana-11px-monochrome
-    text: Amount to gift:
+    !text: tr("Amount to gift:")
     margin-left: 10
   Label
     id: amount

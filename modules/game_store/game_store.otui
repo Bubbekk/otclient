@@ -243,7 +243,7 @@ StoreWindow
     margin-bottom: 10
     height: 17
     width: 180
-    placeholder: Type to search
+    !placeholder: tr("Type to search")
     placeholder-color: #6E706F
 
   UIWidget
@@ -470,7 +470,7 @@ StoreWindow
       anchors.bottom: parent.bottom
       size: 530 407
       margin-top:10
-      text: Recently Added
+      !text: tr("Recently Added")
       UIScrollArea
         id: HomeProductos
         size: 505 190
