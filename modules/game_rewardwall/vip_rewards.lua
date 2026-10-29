@@ -13,7 +13,7 @@ local VIP_REWARDS = {
 	{ image = "/game_rewardwall/images/icon-reward-xpboost", text = "30 minutos de Potenciador de XP del 50%" },
 	{ image = "/game_rewardwall/images/instant-reward-access-icon", text = "1 Acceso instant\225neo a recompensas" },
 	{ item = 28555, text = "Arma de entrenamiento de 500 cargas (a elegir)", choices = { "Espada", "Hacha", "Maza", "Arco", "Vara", "Varita" } },
-	{ image = "/game_rewardwall/images/icon-reward-fixeditems", text = "Cofre VIP: 1 hora de Potenciador de XP, 5 Tibia Coins y 1 Acceso instant\225neo a recompensas" },
+	{ image = "/game_rewardwall/images/icon-reward-fixeditems", text = "Cofre VIP: 1 hora de Potenciador de XP, 10 slivers, 5 Tibia Coins y 1 Acceso instant\225neo a recompensas" },
 }
 
 local vipState = { vip = false, day = 1, canClaim = false, atShrine = false }

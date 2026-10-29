@@ -211,3 +211,4 @@ ES.lines["- third Prey slot and third Hunting Task slot unlocked"] = "- tercer e
 ES.lines["- bestiary kills count 5x instead of 3x"] = "- las muertes del bestiario cuentan x5 en vez de x3"
 ES.lines["- exclusive VIP daily rewards in the reward wall"] = "- recompensas diarias VIP exclusivas en el muro de recompensas"
 ES.lines["- access to the Wheel of Destiny"] = "- acceso a la Wheel of Destiny"
+ES.lines["- +1 forge dust from influenced and fiendish creatures"] = "- +1 de polvo de forja por criaturas influenciadas y fiendish"
