@@ -2111,6 +2111,46 @@ void Game::stashWithdraw(const uint16_t itemId, const uint32_t count, const uint
     m_protocolGame->sendStashWithdraw(itemId, count, stackpos);
 }
 
+void Game::openDepotSearch()
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendOpenDepotSearch();
+}
+
+void Game::closeDepotSearch()
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendCloseDepotSearch();
+}
+
+void Game::requestDepotSearchItem(const uint16_t itemId, const uint8_t tier)
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendDepotSearchItemRequest(itemId, tier);
+}
+
+void Game::retrieveDepotSearch(const uint16_t itemId, const uint8_t tier, const uint8_t type)
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendRetrieveDepotSearch(itemId, tier, type);
+}
+
+void Game::openParentContainerFromDepotSearch(const Position& pos)
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendOpenParentContainer(pos);
+}
+
 void Game::stashStowItem(const Position& position, const uint16_t itemId, const uint32_t count, const uint8_t stackpos, const uint8_t action)
 {
     if (!canPerformGameAction())

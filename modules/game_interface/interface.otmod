@@ -61,6 +61,7 @@ Module
     - game_wheel
     - game_proficiency
     - game_partylist
+    - game_depotsearch
 
   @onLoad: init()
   @onUnload: terminate()

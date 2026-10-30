@@ -1,0 +1,8 @@
+Module
+  name: game_depotsearch
+  description: Search Locker (depot search) window
+  author: servidor-personalizado
+  sandboxed: true
+  scripts: [ depotsearch ]
+  @onLoad: init()
+  @onUnload: terminate()

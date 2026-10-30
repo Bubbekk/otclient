@@ -262,6 +262,7 @@ namespace Proto
         ClientPing = 29,
         ClientPingBack = 30,
         ClientUseStash = 40,
+        ClientRetrieveDepotSearch = 41,
         ClientBestiaryTrackerStatus = 42,
         ClientPartyAnalyzerAction = 43,
 
@@ -321,6 +322,10 @@ namespace Proto
         ClientSendQuickLoot = 143,
         ClientLootContainer = 144,
         ClientQuickLootBlackWhitelist = 145,
+        ClientOpenDepotSearch = 146,
+        ClientCloseDepotSearch = 147,
+        ClientDepotSearchItemRequest = 148,
+        ClientOpenParentContainer = 149,
         ClientTalk = 150,
         ClientRequestChannels = 151,
         ClientJoinChannel = 152,

@@ -349,7 +349,14 @@ void ProtocolGame::parseMessage(const InputMessagePtr& msg)
                     parseCreaturesMark(msg);
                     break;
                 case Proto::GameServerPlayerHelpers:
-                    parsePlayerHelpers(msg);
+                    if (g_game.getClientVersion() >= 1200) {
+                        parseDepotSearchResults(msg);
+                    } else {
+                        parsePlayerHelpers(msg);
+                    }
+                    break;
+                case Proto::GameServerDepotSearchDetailList:
+                    parseDepotSearchDetailList(msg);
                     break;
                 case Proto::GameServerCreatureType:
                     parseCreatureType(msg);
@@ -1596,8 +1603,9 @@ void ProtocolGame::parseOpenContainer(const InputMessagePtr& msg)
     uint16_t containerSize = 0;
     uint16_t firstIndex = 0;
 
+    bool depotSearch = false;
     if (g_game.getClientVersion() >= 1281) {
-        msg->getU8(); // (bool) show search icon
+        depotSearch = static_cast<bool>(msg->getU8()); // show search icon
     }
 
     if (g_game.getFeature(Otc::GameContainerPagination)) {
@@ -1630,6 +1638,7 @@ void ProtocolGame::parseOpenContainer(const InputMessagePtr& msg)
     }
 
     g_game.processOpenContainer(containerId, containerItem, name, capacity, hasParent, items, isUnlocked, hasPages, containerSize, firstIndex);
+    g_lua.callGlobalField("g_game", "onContainerDepotSearch", containerId, depotSearch);
 }
 
 void ProtocolGame::parseCloseContainer(const InputMessagePtr& msg)
@@ -5430,7 +5439,57 @@ void ProtocolGame::parseGameNews(const InputMessagePtr& msg)
 
 void ProtocolGame::parseCloseDepotSearch(const InputMessagePtr& /*msg*/)
 {
-    // TODO:
+    g_lua.callGlobalField("g_game", "onCloseDepotSearch");
+}
+
+static bool hasItemClassification(const uint16_t itemId)
+{
+    const auto& thingType = g_things.getThingType(itemId, ThingCategoryItem);
+    return thingType && thingType->getClassification() > 0;
+}
+
+void ProtocolGame::parseDepotSearchResults(const InputMessagePtr& msg)
+{
+    // { itemId, tier, count }
+    std::vector<std::tuple<uint16_t, uint8_t, uint16_t>> items;
+    const uint16_t count = msg->getU16();
+    items.reserve(count);
+    for (auto i = 0; i < count; ++i) {
+        const uint16_t itemId = msg->getU16();
+        const uint8_t tier = hasItemClassification(itemId) ? msg->getU8() : 0;
+        const uint16_t itemCount = msg->getU16();
+        items.emplace_back(itemId, tier, itemCount);
+    }
+
+    g_lua.callGlobalField("g_game", "onDepotSearchResults", items);
+}
+
+void ProtocolGame::parseDepotSearchDetailList(const InputMessagePtr& msg)
+{
+    const uint16_t itemId = msg->getU16();
+    const uint8_t tier = hasItemClassification(itemId) ? msg->getU8() : 0;
+
+    const uint32_t depotCount = msg->getU32();
+    std::vector<ItemPtr> depotItems;
+    const uint8_t depotSize = msg->getU8();
+    for (auto i = 0; i < depotSize; ++i) {
+        depotItems.push_back(getItem(msg));
+    }
+
+    const uint32_t inboxCount = msg->getU32();
+    std::vector<ItemPtr> inboxItems;
+    const uint8_t inboxSize = msg->getU8();
+    for (auto i = 0; i < inboxSize; ++i) {
+        inboxItems.push_back(getItem(msg));
+    }
+
+    uint32_t stashCount = 0;
+    if (msg->getU8()) {
+        msg->getU16(); // item id
+        stashCount = msg->getU32();
+    }
+
+    g_lua.callGlobalField("g_game", "onDepotSearchDetail", itemId, tier, depotCount, depotItems, inboxCount, inboxItems, stashCount);
 }
 
 void ProtocolGame::parseBlessDialog(const InputMessagePtr& msg)

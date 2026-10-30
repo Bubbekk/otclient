@@ -1,0 +1,118 @@
+DepotSearchSlot < UIWidget
+  size: 38 38
+  image-source: /images/ui/item
+  image-border: 2
+  focusable: true
+  phantom: false
+
+  $focus:
+    image-color: #ffd04f
+
+  Item
+    id: item
+    anchors.centerIn: parent
+    virtual: true
+    phantom: true
+
+DepotSearchWindow < MainWindow
+  id: depotSearchWindow
+  text: Buscar en el depot
+  size: 420 420
+  @onEscape: modules.game_depotsearch.close()
+
+  TextEdit
+    id: searchText
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    placeholder: Filtrar por nombre...
+
+  ScrollablePanel
+    id: itemsPanel
+    anchors.top: searchText.bottom
+    anchors.left: parent.left
+    anchors.right: itemsScroll.left
+    height: 200
+    margin-top: 6
+    vertical-scrollbar: itemsScroll
+    layout:
+      type: grid
+      cell-size: 38 38
+      cell-spacing: 2
+      flow: true
+
+  VerticalScrollBar
+    id: itemsScroll
+    anchors.top: itemsPanel.top
+    anchors.bottom: itemsPanel.bottom
+    anchors.right: parent.right
+    step: 40
+    pixels-scroll: true
+
+  HorizontalSeparator
+    id: separator
+    anchors.top: itemsPanel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+
+  Item
+    id: detailItem
+    anchors.top: separator.bottom
+    anchors.left: parent.left
+    margin-top: 8
+    virtual: true
+
+  Label
+    id: detailName
+    anchors.top: detailItem.top
+    anchors.left: detailItem.right
+    anchors.right: parent.right
+    margin-left: 8
+    color: #ffffff
+    text-auto-resize: false
+
+  Label
+    id: detailCounts
+    anchors.top: detailName.bottom
+    anchors.left: detailName.left
+    anchors.right: parent.right
+    margin-top: 4
+    text-auto-resize: false
+
+  Button
+    id: retrieveDepot
+    anchors.top: detailItem.bottom
+    anchors.left: parent.left
+    width: 130
+    margin-top: 10
+    text: Retirar del depot
+    enabled: false
+    @onClick: modules.game_depotsearch.retrieve(1)
+
+  Button
+    id: retrieveInbox
+    anchors.top: retrieveDepot.top
+    anchors.left: retrieveDepot.right
+    width: 130
+    margin-left: 6
+    text: Retirar del buzón
+    enabled: false
+    @onClick: modules.game_depotsearch.retrieve(0)
+
+  Label
+    id: status
+    anchors.left: parent.left
+    anchors.right: closeButton.left
+    anchors.bottom: parent.bottom
+    margin-bottom: 4
+    color: #909090
+    text-auto-resize: false
+
+  Button
+    id: closeButton
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    width: 64
+    text: Cerrar
+    @onClick: modules.game_depotsearch.close()

@@ -418,6 +418,11 @@ void Client::registerLuaFunctions()
     g_lua.bindSingletonFunction("g_game", "enableTileThingLuaCallback", &Game::enableTileThingLuaCallback, &g_game);
     g_lua.bindSingletonFunction("g_game", "isTileThingLuaCallbackEnabled", &Game::isTileThingLuaCallbackEnabled, &g_game);
     g_lua.bindSingletonFunction("g_game", "stashWithdraw", &Game::stashWithdraw, &g_game);
+    g_lua.bindSingletonFunction("g_game", "openDepotSearch", &Game::openDepotSearch, &g_game);
+    g_lua.bindSingletonFunction("g_game", "closeDepotSearch", &Game::closeDepotSearch, &g_game);
+    g_lua.bindSingletonFunction("g_game", "requestDepotSearchItem", &Game::requestDepotSearchItem, &g_game);
+    g_lua.bindSingletonFunction("g_game", "retrieveDepotSearch", &Game::retrieveDepotSearch, &g_game);
+    g_lua.bindSingletonFunction("g_game", "openParentContainerFromDepotSearch", &Game::openParentContainerFromDepotSearch, &g_game);
     g_lua.bindSingletonFunction("g_game", "stashStowItem", &Game::stashStowItem, &g_game);
     g_lua.bindSingletonFunction("g_game", "requestHighscore", &Game::requestHighscore, &g_game);
     g_lua.bindSingletonFunction("g_game", "imbuementDurations", &Game::imbuementDurations, &g_game);

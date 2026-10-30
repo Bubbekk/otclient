@@ -431,6 +431,11 @@ public:
     bool isTileThingLuaCallbackEnabled() { return m_tileThingsLuaCallback; }
 
     void stashWithdraw(uint16_t itemId, uint32_t count, uint8_t stackpos);
+    void openDepotSearch();
+    void closeDepotSearch();
+    void requestDepotSearchItem(uint16_t itemId, uint8_t tier);
+    void retrieveDepotSearch(uint16_t itemId, uint8_t tier, uint8_t type);
+    void openParentContainerFromDepotSearch(const Position& pos);
 
     void stashStowItem(const Position& position, const uint16_t itemId, const uint32_t count, const uint8_t stackpos, const uint8_t action);
 

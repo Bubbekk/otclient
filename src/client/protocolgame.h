@@ -153,6 +153,11 @@ public:
     void sendOpenRewardHistory();
     void sendGetRewardDaily(const uint8_t bonusShrine, const std::map<uint16_t, uint8_t>& items);
     void sendStashWithdraw(uint16_t itemId, uint32_t count, uint8_t stackpos);
+    void sendOpenDepotSearch();
+    void sendCloseDepotSearch();
+    void sendDepotSearchItemRequest(uint16_t itemId, uint8_t tier);
+    void sendRetrieveDepotSearch(uint16_t itemId, uint8_t tier, uint8_t type);
+    void sendOpenParentContainer(const Position& pos);
     void sendStashStow(const Position& position, const uint16_t itemId, const uint32_t count, const uint8_t stackpos, const uint8_t action);
     void sendHighscoreInfo(uint8_t action, uint8_t category, uint32_t vocation, std::string_view world, uint8_t worldType, uint8_t battlEye, uint16_t page, uint8_t totalPages);
     void sendTaskBoardAction(const uint8_t option, const uint16_t value = 0, const uint16_t extraValue = 0);
@@ -394,6 +399,8 @@ private:
     void parseClientCheck(const InputMessagePtr& msg);
     void parseGameNews(const InputMessagePtr& msg);
     void parseCloseDepotSearch(const InputMessagePtr& /*msg*/);
+    void parseDepotSearchResults(const InputMessagePtr& msg);
+    void parseDepotSearchDetailList(const InputMessagePtr& msg);
     void parseBlessDialog(const InputMessagePtr& msg);
     void parseRestingAreaState(const InputMessagePtr& msg);
     void parseUpdateImpactTracker(const InputMessagePtr& msg);

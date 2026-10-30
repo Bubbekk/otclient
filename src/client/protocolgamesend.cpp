@@ -1650,6 +1650,53 @@ void ProtocolGame::sendStashWithdraw(const uint16_t itemId, const uint32_t count
     send(msg);
 }
 
+void ProtocolGame::sendOpenDepotSearch()
+{
+    const auto& msg = std::make_shared<OutputMessage>();
+    msg->addU8(Proto::ClientOpenDepotSearch);
+    send(msg);
+}
+
+void ProtocolGame::sendCloseDepotSearch()
+{
+    const auto& msg = std::make_shared<OutputMessage>();
+    msg->addU8(Proto::ClientCloseDepotSearch);
+    send(msg);
+}
+
+void ProtocolGame::sendDepotSearchItemRequest(const uint16_t itemId, const uint8_t tier)
+{
+    const auto& msg = std::make_shared<OutputMessage>();
+    msg->addU8(Proto::ClientDepotSearchItemRequest);
+    msg->addU16(itemId);
+    const auto& thingType = g_things.getThingType(itemId, ThingCategoryItem);
+    if (thingType && thingType->getClassification() > 0) {
+        msg->addU8(tier);
+    }
+    send(msg);
+}
+
+void ProtocolGame::sendRetrieveDepotSearch(const uint16_t itemId, const uint8_t tier, const uint8_t type)
+{
+    const auto& msg = std::make_shared<OutputMessage>();
+    msg->addU8(Proto::ClientRetrieveDepotSearch);
+    msg->addU16(itemId);
+    const auto& thingType = g_things.getThingType(itemId, ThingCategoryItem);
+    if (thingType && thingType->getClassification() > 0) {
+        msg->addU8(tier);
+    }
+    msg->addU8(type);
+    send(msg);
+}
+
+void ProtocolGame::sendOpenParentContainer(const Position& pos)
+{
+    const auto& msg = std::make_shared<OutputMessage>();
+    msg->addU8(Proto::ClientOpenParentContainer);
+    addPosition(msg, pos);
+    send(msg);
+}
+
 void ProtocolGame::sendStashStow(const Position& position, const uint16_t itemId, const uint32_t count, const uint8_t stackpos, const uint8_t action)
 {
     const auto& msg = std::make_shared<OutputMessage>();
