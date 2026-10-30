@@ -1,0 +1,92 @@
+PartyMemberRow < UIWidget
+  height: 30
+  margin-top: 2
+  padding: 2
+  background-color: alpha
+  phantom: false
+
+  $hover:
+    background-color: #ffffff1a
+
+  Label
+    id: name
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    font: verdana-11px-rounded
+    color: #c0c0c0
+    text-auto-resize: false
+    phantom: true
+
+  ProgressBar
+    id: health
+    anchors.top: name.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 5
+    margin-top: 2
+    background-color: #00bc00
+    phantom: true
+
+  ProgressBar
+    id: mana
+    anchors.top: health.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 4
+    margin-top: 1
+    background-color: #2050f0
+    phantom: true
+
+PartyListWindow < MiniWindow
+  id: partyListWindow
+  height: 120
+  @onOpen: modules.game_partylist.onMiniWindowOpen()
+  @onClose: modules.game_partylist.onMiniWindowClose()
+
+  UIWidget
+    id: miniwindowIcon
+    anchors.top: miniwindowHeader.top
+    anchors.left: miniwindowHeader.left
+    margin-top: 2
+    margin-left: 4
+    size: 12 12
+    image-source: /images/options/button_battlelist
+    image-smooth: true
+
+  Label
+    id: miniwindowTitle
+    anchors.top: miniwindowHeader.top
+    anchors.left: miniwindowHeader.left
+    anchors.right: miniwindowHeader.right
+    margin-top: 2
+    margin-left: 20
+    margin-right: 50
+    font: verdana-11px-monochrome
+    height: 13
+    text: Grupo
+    color: #9d9d9dff
+
+  MiniWindowContents
+    id: contentsPanel
+    anchors.top: miniwindowTopBar.bottom
+    anchors.left: parent.left
+    anchors.right: miniwindowScrollBar.left
+    anchors.bottom: parent.bottom
+    margin-left: 3
+    margin-top: -2
+    margin-right: 1
+    vertical-scrollbar: miniwindowScrollBar
+    padding-left: 4
+    padding-right: 4
+    padding-bottom: 3
+    layout: verticalBox
+
+    Label
+      id: emptyLabel
+      height: 28
+      text-wrap: true
+      text-align: center
+      font: verdana-11px-rounded
+      color: #909090
+      text: No estás en un grupo.

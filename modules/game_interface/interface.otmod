@@ -60,6 +60,7 @@ Module
     - game_taskboard
     - game_wheel
     - game_proficiency
+    - game_partylist
 
   @onLoad: init()
   @onUnload: terminate()

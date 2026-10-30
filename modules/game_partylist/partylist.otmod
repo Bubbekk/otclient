@@ -1,0 +1,8 @@
+Module
+  name: game_partylist
+  description: Party list window (members on screen with health and mana)
+  author: servidor-personalizado
+  sandboxed: true
+  scripts: [ partylist ]
+  @onLoad: init()
+  @onUnload: terminate()
