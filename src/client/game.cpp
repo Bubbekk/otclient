@@ -2111,6 +2111,22 @@ void Game::stashWithdraw(const uint16_t itemId, const uint32_t count, const uint
     m_protocolGame->sendStashWithdraw(itemId, count, stackpos);
 }
 
+void Game::setMonsterPodium(const uint32_t raceId, const Position& pos, const uint16_t itemId, const uint8_t stackpos, const uint8_t direction, const bool podiumVisible, const bool monsterVisible)
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendSetMonsterPodium(raceId, pos, itemId, stackpos, direction, podiumVisible, monsterVisible);
+}
+
+void Game::setPodiumOutfit(const Outfit& outfit, const Position& pos, const uint16_t itemId, const uint8_t stackpos, const uint8_t direction, const bool podiumVisible)
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendSetPodiumOutfit(outfit, pos, itemId, stackpos, direction, podiumVisible);
+}
+
 void Game::openDepotSearch()
 {
     if (!canPerformGameAction())

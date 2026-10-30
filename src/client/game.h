@@ -432,6 +432,8 @@ public:
 
     void stashWithdraw(uint16_t itemId, uint32_t count, uint8_t stackpos);
     void openDepotSearch();
+    void setMonsterPodium(uint32_t raceId, const Position& pos, uint16_t itemId, uint8_t stackpos, uint8_t direction, bool podiumVisible, bool monsterVisible);
+    void setPodiumOutfit(const Outfit& outfit, const Position& pos, uint16_t itemId, uint8_t stackpos, uint8_t direction, bool podiumVisible);
     void closeDepotSearch();
     void requestDepotSearchItem(uint16_t itemId, uint8_t tier);
     void retrieveDepotSearch(uint16_t itemId, uint8_t tier, uint8_t type);

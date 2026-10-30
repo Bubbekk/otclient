@@ -154,6 +154,8 @@ public:
     void sendGetRewardDaily(const uint8_t bonusShrine, const std::map<uint16_t, uint8_t>& items);
     void sendStashWithdraw(uint16_t itemId, uint32_t count, uint8_t stackpos);
     void sendOpenDepotSearch();
+    void sendSetMonsterPodium(uint32_t raceId, const Position& pos, uint16_t itemId, uint8_t stackpos, uint8_t direction, bool podiumVisible, bool monsterVisible);
+    void sendSetPodiumOutfit(const Outfit& outfit, const Position& pos, uint16_t itemId, uint8_t stackpos, uint8_t direction, bool podiumVisible);
     void sendCloseDepotSearch();
     void sendDepotSearchItemRequest(uint16_t itemId, uint8_t tier);
     void sendRetrieveDepotSearch(uint16_t itemId, uint8_t tier, uint8_t type);
@@ -400,6 +402,7 @@ private:
     void parseGameNews(const InputMessagePtr& msg);
     void parseCloseDepotSearch(const InputMessagePtr& /*msg*/);
     void parseDepotSearchResults(const InputMessagePtr& msg);
+    void parseMonsterPodiumWindow(const InputMessagePtr& msg);
     void parseDepotSearchDetailList(const InputMessagePtr& msg);
     void parseBlessDialog(const InputMessagePtr& msg);
     void parseRestingAreaState(const InputMessagePtr& msg);

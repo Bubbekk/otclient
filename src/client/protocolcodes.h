@@ -191,6 +191,7 @@ namespace Proto
         GameServerFloorChangeDown = 191,
         GameServerLootContainers = 192,
         GameServerMonkData = 193,
+        GameServerMonsterPodiumWindow = 194,
         GameServerCyclopediaHouseAuctionMessage = 195,
         GameServerWeaponProficiencyInfo = 196, // TournamentInformation = 196
         GameServerTournamentLeaderboard = 197, /* Unused */
@@ -335,6 +336,7 @@ namespace Proto
         ClientCloseRuleViolation = 156,
         ClientCancelRuleViolation = 157,
         ClientCloseNpcChannel = 158,
+        ClientSetMonsterPodium = 159,
         ClientChangeFightModes = 160,
         ClientAttack = 161,
         ClientFollow = 162,

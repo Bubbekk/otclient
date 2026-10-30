@@ -1,0 +1,114 @@
+PodiumListRow < Label
+  height: 16
+  text-offset: 4 1
+  focusable: true
+  background-color: alpha
+
+  $focus:
+    background-color: #ffffff33
+    color: #ffffff
+
+PodiumWindow < MainWindow
+  id: podiumWindow
+  size: 430 360
+  @onEscape: modules.game_podium.close()
+
+  TextEdit
+    id: searchText
+    anchors.top: parent.top
+    anchors.left: parent.left
+    width: 220
+    placeholder: Filtrar por nombre...
+
+  TextList
+    id: list
+    anchors.top: searchText.bottom
+    anchors.left: parent.left
+    width: 210
+    anchors.bottom: okButton.top
+    margin-top: 6
+    margin-bottom: 8
+    vertical-scrollbar: listScroll
+
+  VerticalScrollBar
+    id: listScroll
+    anchors.top: list.top
+    anchors.bottom: list.bottom
+    anchors.left: list.right
+    step: 16
+    pixels-scroll: true
+
+  Panel
+    id: previewPanel
+    anchors.top: parent.top
+    anchors.left: listScroll.right
+    anchors.right: parent.right
+    height: 150
+    margin-left: 10
+    image-source: /images/ui/panel_flat
+    image-border: 1
+
+    Creature
+      id: preview
+      size: 128 128
+      anchors.centerIn: parent
+
+  Label
+    id: selectedName
+    anchors.top: previewPanel.bottom
+    anchors.left: previewPanel.left
+    anchors.right: previewPanel.right
+    margin-top: 6
+    text-align: center
+    text-auto-resize: false
+    color: #ffffff
+
+  Button
+    id: rotateLeft
+    anchors.top: selectedName.bottom
+    anchors.left: previewPanel.left
+    width: 80
+    margin-top: 6
+    text: < Girar
+    @onClick: modules.game_podium.rotate(-1)
+
+  Button
+    id: rotateRight
+    anchors.top: rotateLeft.top
+    anchors.right: previewPanel.right
+    width: 80
+    text: Girar >
+    @onClick: modules.game_podium.rotate(1)
+
+  CheckBox
+    id: podiumVisible
+    anchors.top: rotateLeft.bottom
+    anchors.left: previewPanel.left
+    anchors.right: previewPanel.right
+    margin-top: 10
+    text: Mostrar podio
+
+  CheckBox
+    id: displayVisible
+    anchors.top: podiumVisible.bottom
+    anchors.left: previewPanel.left
+    anchors.right: previewPanel.right
+    margin-top: 6
+    text: Mostrar criatura
+
+  Button
+    id: okButton
+    anchors.right: cancelButton.left
+    anchors.bottom: parent.bottom
+    width: 64
+    margin-right: 6
+    text: Aceptar
+    @onClick: modules.game_podium.confirm()
+
+  Button
+    id: cancelButton
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    width: 64
+    text: Cancelar
+    @onClick: modules.game_podium.close()

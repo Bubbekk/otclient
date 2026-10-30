@@ -1,0 +1,8 @@
+Module
+  name: game_podium
+  description: Monster (bestiary/bosstiary) and outfit podium windows
+  author: servidor-personalizado
+  sandboxed: true
+  scripts: [ podium ]
+  @onLoad: init()
+  @onUnload: terminate()

@@ -419,6 +419,8 @@ void Client::registerLuaFunctions()
     g_lua.bindSingletonFunction("g_game", "isTileThingLuaCallbackEnabled", &Game::isTileThingLuaCallbackEnabled, &g_game);
     g_lua.bindSingletonFunction("g_game", "stashWithdraw", &Game::stashWithdraw, &g_game);
     g_lua.bindSingletonFunction("g_game", "openDepotSearch", &Game::openDepotSearch, &g_game);
+    g_lua.bindSingletonFunction("g_game", "setMonsterPodium", &Game::setMonsterPodium, &g_game);
+    g_lua.bindSingletonFunction("g_game", "setPodiumOutfit", &Game::setPodiumOutfit, &g_game);
     g_lua.bindSingletonFunction("g_game", "closeDepotSearch", &Game::closeDepotSearch, &g_game);
     g_lua.bindSingletonFunction("g_game", "requestDepotSearchItem", &Game::requestDepotSearchItem, &g_game);
     g_lua.bindSingletonFunction("g_game", "retrieveDepotSearch", &Game::retrieveDepotSearch, &g_game);

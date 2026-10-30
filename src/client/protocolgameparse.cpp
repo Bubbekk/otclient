@@ -355,6 +355,9 @@ void ProtocolGame::parseMessage(const InputMessagePtr& msg)
                         parsePlayerHelpers(msg);
                     }
                     break;
+                case Proto::GameServerMonsterPodiumWindow:
+                    parseMonsterPodiumWindow(msg);
+                    break;
                 case Proto::GameServerDepotSearchDetailList:
                     parseDepotSearchDetailList(msg);
                     break;
@@ -3166,7 +3169,19 @@ void ProtocolGame::parseFloorChangeDown(const InputMessagePtr& msg)
 
 void ProtocolGame::parseOpenOutfitWindow(const InputMessagePtr& msg) const
 {
-    const auto& currentOutfit = getOutfit(msg);
+    Outfit currentOutfit;
+    if (g_game.getClientVersion() >= 1281 && msg->peekU16() == 0) {
+        msg->getU16(); // empty podium: no looktypeEx follows
+        currentOutfit.setCategory(ThingCategoryCreature);
+        if (g_game.getFeature(Otc::GamePlayerMounts)) {
+            currentOutfit.setMount(msg->getU16());
+            if (currentOutfit.getMount() != 0) {
+                msg->skipBytes(4); // mount colours
+            }
+        }
+    } else {
+        currentOutfit = getOutfit(msg);
+    }
 
     // mount color bytes are required here regardless of having one
     if (g_game.getClientVersion() >= 1281) {
@@ -3248,7 +3263,21 @@ void ProtocolGame::parseOpenOutfitWindow(const InputMessagePtr& msg) const
     }
 
     if (g_game.getClientVersion() >= 1281) {
-        msg->getU8(); // Try outfit mode (?)
+        const uint8_t tryOutfitMode = msg->getU8();
+        if (tryOutfitMode == 0x05) { // podium
+            msg->getU8(); // (bool) mount shown
+            msg->getU16(); // unknown
+            const uint16_t posX = msg->getU16();
+            const uint16_t posY = msg->getU16();
+            const Position position(posX, posY, msg->getU8());
+            const uint16_t itemId = msg->getU16();
+            const uint8_t stackpos = msg->getU8();
+            const bool podiumVisible = msg->getU8() != 0;
+            const bool hasOutfit = msg->getU8() != 0;
+            const uint8_t direction = msg->getU8();
+            g_lua.callGlobalField("g_game", "onOpenPodiumOutfitWindow", currentOutfit, outfitList, mountList, position, itemId, stackpos, podiumVisible, hasOutfit, direction);
+            return;
+        }
         msg->getU8(); // (bool) mounted
         msg->getU8(); // (bool) randomize mount
     }
@@ -5462,6 +5491,45 @@ void ProtocolGame::parseDepotSearchResults(const InputMessagePtr& msg)
     }
 
     g_lua.callGlobalField("g_game", "onDepotSearchResults", items);
+}
+
+void ProtocolGame::parseMonsterPodiumWindow(const InputMessagePtr& msg)
+{
+    // Currently displayed monster (only its looktype matters to the window)
+    const uint16_t lookType = msg->getU16();
+    if (lookType != 0) {
+        msg->skipBytes(5); // colours and addons
+    } else {
+        msg->getU16(); // looktypeEx
+    }
+    msg->getU16(); // unknown list size (always 0)
+
+    const bool isBoss = msg->getU8() != 0;
+    // { raceId, name } - bestiary podiums only send the race id
+    std::vector<std::tuple<uint16_t, std::string>> monsters;
+    const uint16_t count = msg->getU16();
+    for (auto i = 0; i < count; ++i) {
+        const uint16_t raceId = msg->getU16();
+        std::string name;
+        if (isBoss) {
+            name = msg->getString();
+            if (msg->getU16() != 0) {
+                msg->skipBytes(5);
+            } else {
+                msg->getU16();
+            }
+        }
+        monsters.emplace_back(raceId, name);
+    }
+
+    const auto& position = getPosition(msg);
+    const uint16_t itemId = msg->getU16();
+    const uint8_t stackpos = msg->getU8();
+    const bool podiumVisible = msg->getU8() != 0;
+    const bool monsterVisible = msg->getU8() != 0;
+    const uint8_t direction = msg->getU8();
+
+    g_lua.callGlobalField("g_game", "onOpenMonsterPodiumWindow", isBoss, monsters, position, itemId, stackpos, podiumVisible, monsterVisible, direction);
 }
 
 void ProtocolGame::parseDepotSearchDetailList(const InputMessagePtr& msg)

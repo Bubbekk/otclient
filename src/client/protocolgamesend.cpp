@@ -1650,6 +1650,41 @@ void ProtocolGame::sendStashWithdraw(const uint16_t itemId, const uint32_t count
     send(msg);
 }
 
+void ProtocolGame::sendSetMonsterPodium(const uint32_t raceId, const Position& pos, const uint16_t itemId, const uint8_t stackpos, const uint8_t direction, const bool podiumVisible, const bool monsterVisible)
+{
+    const auto& msg = std::make_shared<OutputMessage>();
+    msg->addU8(Proto::ClientSetMonsterPodium);
+    msg->addU32(raceId);
+    addPosition(msg, pos);
+    msg->addU16(itemId);
+    msg->addU8(stackpos);
+    msg->addU8(direction);
+    msg->addU8(podiumVisible ? 1 : 0);
+    msg->addU8(monsterVisible ? 1 : 0);
+    send(msg);
+}
+
+void ProtocolGame::sendSetPodiumOutfit(const Outfit& outfit, const Position& pos, const uint16_t itemId, const uint8_t stackpos, const uint8_t direction, const bool podiumVisible)
+{
+    const auto& msg = std::make_shared<OutputMessage>();
+    msg->addU8(Proto::ClientChangeOutfit);
+    msg->addU8(0x02); // podium outfit window
+    msg->addU16(outfit.getId());
+    msg->addU8(outfit.getHead());
+    msg->addU8(outfit.getBody());
+    msg->addU8(outfit.getLegs());
+    msg->addU8(outfit.getFeet());
+    msg->addU8(outfit.getAddons());
+    addPosition(msg, pos);
+    msg->addU16(itemId);
+    msg->addU8(stackpos);
+    msg->addU16(outfit.getMount());
+    msg->addU32(0); // mount colours
+    msg->addU8(direction);
+    msg->addU8(podiumVisible ? 1 : 0);
+    send(msg);
+}
+
 void ProtocolGame::sendOpenDepotSearch()
 {
     const auto& msg = std::make_shared<OutputMessage>();
