@@ -83,6 +83,18 @@ UIWidget
       height: 22
 
       OptionCheckBox
+        id: aimAtTarget
+        text: Girar hacia el objetivo al lanzar hechizos de ataque
+        tooltip: Antes de lanzar un hechizo de ataque, tu personaje mira hacia la criatura que atacas, para que las ondas y golpes frontales la alcancen.
+
+    SmallReversedQtPanel
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.top: prev.bottom
+      margin-top: 7
+      height: 22
+
+      OptionCheckBox
         id: talkOnRightClick
         !text: tr('Right-click talk to NPC')
 

@@ -565,19 +565,19 @@ Found a bug? Please create an issue in our **[bug tracker](https://github.com/me
 ---
 
 ## <a id="roadmap"></a>❤️ Roadmap
-| TO-DO list | Status | PR |
+| Feature | Status | Where |
 |---|---|---|
-| 11.50 - Loot Container | ![](https://geps.dev/progress/0) | None |
-| 11.80 - Cyclopedia Map | ![](https://geps.dev/progress/0) | None |
-| 12.20 - Search Locker | ![](https://geps.dev/progress/0) | None |
-| 12.20 - Party List | ![](https://geps.dev/progress/0) | None |
-| 12.30 - Prey Hunt + Tracker | ![](https://geps.dev/progress/0) | None |
-| 12.90 - Podium System | ![](https://geps.dev/progress/0) | None |
-| 14.12 - Quickloot Keybind | ![](https://geps.dev/progress/0) | None |
-| 14.12 - Cyclopedia Magical Archive | ![](https://geps.dev/progress/5) | [#1676](https://github.com/opentibiabr/otclient/pull/1676) |
-| 15.00 - Aim At A Target | ![](https://geps.dev/progress/0) | None |
-| 15.12 - UI Map Conditions | ![](https://geps.dev/progress/0) | None |
-| 15.14 - Battle List Keybinds | ![](https://geps.dev/progress/0) | None |
+| 11.50 - Loot Container | ![](https://geps.dev/progress/100) | game_quickloot |
+| 11.80 - Cyclopedia Map | ![](https://geps.dev/progress/100) | game_cyclopedia (map tab) |
+| 12.20 - Search Locker | ![](https://geps.dev/progress/100) | game_depotsearch |
+| 12.20 - Party List | ![](https://geps.dev/progress/100) | game_partylist |
+| 12.30 - Prey Hunt + Tracker | ![](https://geps.dev/progress/100) | game_cyclopedia trackers; hunting tasks replaced by game_taskboard (15.20+) |
+| 12.90 - Podium System | ![](https://geps.dev/progress/100) | game_podium |
+| 14.12 - Quickloot Keybind | ![](https://geps.dev/progress/100) | game_quickloot (Alt+Q) |
+| 14.12 - Cyclopedia Magical Archive | ![](https://geps.dev/progress/100) | game_cyclopedia (magicalArchives tab) |
+| 15.00 - Aim At A Target | ![](https://geps.dev/progress/100) | client_options (aimAtTarget) + gamelib Spells.aimAtTarget |
+| 15.12 - UI Map Conditions | ![](https://geps.dev/progress/100) | game_healthcircle (ConditionsHUD) |
+| 15.14 - Battle List Keybinds | ![](https://geps.dev/progress/100) | game_battle |
 | 15.25 - Protocol Features | ![](https://geps.dev/progress/100) | [#1604](https://github.com/opentibiabr/otclient/pull/1604) |
 
 

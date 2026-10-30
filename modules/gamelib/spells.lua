@@ -602,3 +602,36 @@ function Spells.getImageClipCooldown(indexClip, profile)
     end
     return indexClip * SpelllistSettings[profile].iconSizeCooldown.width .. " 0 " .. SpelllistSettings[profile].iconSizeCooldown.width .. " " .. SpelllistSettings[profile].iconSizeCooldown.height
 end
+
+-- Aim at target (15.00): attack spells are cast in the direction the character faces, so turn
+-- towards the attacked creature first. Only straight lines count; diagonals keep the facing.
+function Spells.aimAtTarget(words)
+    if not words or not modules.client_options or not modules.client_options.getOption('aimAtTarget') then
+        return
+    end
+    local spell = Spells.getSpellByWords(words:match('^%s*(.-)%s*$'))
+    if not spell or not spell.group or not spell.group[1] -- attack group then
+        return
+    end
+    local player = g_game.getLocalPlayer()
+    local target = g_game.getAttackingCreature()
+    if not player or not target then
+        return
+    end
+    local from, to = player:getPosition(), target:getPosition()
+    if not from or not to or from.z ~= to.z then
+        return
+    end
+    local dx, dy = to.x - from.x, to.y - from.y
+    local direction
+    if math.abs(dx) > math.abs(dy) then
+        direction = dx > 0 and East or West
+    elseif math.abs(dy) > math.abs(dx) then
+        direction = dy > 0 and South or North
+    else
+        return
+    end
+    if player:getDirection() ~= direction then
+        g_game.turn(direction)
+    end
+end

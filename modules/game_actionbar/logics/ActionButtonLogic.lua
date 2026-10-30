@@ -375,6 +375,7 @@ function onExecuteAction(button, isPress)
     if action == UseTypes["chatText"] and button.cache.sendAutomatic then
         if button.cache.isSpell then
             spellGroupPressed[tostring(button.cache.primaryGroup)] = true
+            Spells.aimAtTarget(button.cache.param)
             g_game.talk(button.cache.param)
         else
             modules.game_console.sendMessage(button.cache.param)

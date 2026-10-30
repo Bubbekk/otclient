@@ -1675,6 +1675,7 @@ function sendMessage(message, tab)
     if #message == 0 then
         return
     end
+    Spells.aimAtTarget(message)
 
     -- add new command to history
     currentMessageIndex = 0
