@@ -1,0 +1,8 @@
+Module
+  name: game_bounty
+  description: Bounty hunting - wanted list over the game screen and bounty placement window
+  author: servidor-personalizado
+  sandboxed: true
+  scripts: [ bounty ]
+  @onLoad: init()
+  @onUnload: terminate()

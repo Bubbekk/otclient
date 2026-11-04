@@ -63,6 +63,7 @@ Module
     - game_partylist
     - game_depotsearch
     - game_podium
+    - game_bounty
 
   @onLoad: init()
   @onUnload: terminate()
