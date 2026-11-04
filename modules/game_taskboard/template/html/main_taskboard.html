@@ -319,8 +319,8 @@
                                         <button class="shopBuyBtn"
                                             *enabled="item.canAfford"
                                             onclick="self:buyItem(item.id)">
-                                            <img src="/images/ui/icon-yes" *visible="item.bought" style="image-offset-y: 5"/>
-                                            <label class="infoPanelLabel" *text="item.bought and 'Comprado' or 'Comprar'"></label>
+                                            <img class="shopBuyCheck" src="/images/ui/icon-yes" *visible="item.bought"/>
+                                            <label class="shopBuyLabel" *text="item.bought and 'Comprado' or 'Comprar'"></label>
                                         </button>
                                         <div class="shopPriceBox" style="width:90px;" >
                                             <label class="shopPriceLabel">{{item.displayPrice}}</label>

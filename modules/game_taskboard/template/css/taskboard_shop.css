@@ -113,6 +113,8 @@
 .shopBuyBtn {
     width: 84px;
     height: 20px;
+    max-height: 20px;
+    position: relative;
     display: inline-block;
     vertical-align: top;
     margin-right: 4px;
@@ -163,4 +165,22 @@
     height: 30px;
     right: -2px;
     bottom: 0;
+}
+
+.shopBuyLabel {
+    width: 100%;
+    height: 20px;
+    text-align: center;
+    font: verdana-11px-rounded;
+    color: #e0e0e0;
+    margin: 0;
+    padding-top: 3px;
+}
+
+.shopBuyCheck {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    left: 4px;
+    top: 5px;
 }
