@@ -206,14 +206,19 @@ function executeBot(config, storage, tabs, msgCallback, saveConfigCallback, relo
         end
       end
 
-      while #context._scheduler > 0 and context._scheduler[1].execution <= g_clock.millis() do
-        local status, result = pcall(function()
-          context._scheduler[1].callback()
-        end)
+      -- Take each due task off the queue before running it: a callback that schedules new work for
+      -- "now" inserts it at the front, and removing index 1 afterwards would drop that new task and
+      -- run the same one forever, freezing the client. Tasks added during this pass wait for the next tick.
+      local now = g_clock.millis()
+      local due = {}
+      while #context._scheduler > 0 and context._scheduler[1].execution <= now do
+        table.insert(due, table.remove(context._scheduler, 1))
+      end
+      for _, task in ipairs(due) do
+        local status, result = pcall(task.callback)
         if not status then
           context.error("Schedule execution error: " .. result)
         end
-        table.remove(context._scheduler, 1)
       end
     end,
     callbacks = {

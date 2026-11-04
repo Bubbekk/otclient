@@ -121,11 +121,13 @@ context.translateAllPathsToPath = function(paths, destPos)
     destPosStr = destPos.x .. "," .. destPos.y .. "," .. destPos.z
   end
 
+  local visited = {}
   while destPosStr:len() > 0 do
     local node = paths[destPosStr]
-    if not node then
-      break
+    if not node or visited[destPosStr] then
+      break -- unknown or already walked node: a looping path must not freeze the client
     end
+    visited[destPosStr] = true
     if node[3] < 0 then
       break
     end
