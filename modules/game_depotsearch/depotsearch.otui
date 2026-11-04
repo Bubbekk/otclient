@@ -31,9 +31,10 @@ DepotSearchWindow < MainWindow
     id: itemsPanel
     anchors.top: searchText.bottom
     anchors.left: parent.left
-    anchors.right: itemsScroll.left
+    anchors.right: parent.right
     height: 200
     margin-top: 6
+    margin-right: 14
     vertical-scrollbar: itemsScroll
     layout:
       type: grid
@@ -43,9 +44,10 @@ DepotSearchWindow < MainWindow
 
   VerticalScrollBar
     id: itemsScroll
-    anchors.top: itemsPanel.top
-    anchors.bottom: itemsPanel.bottom
+    anchors.top: searchText.bottom
     anchors.right: parent.right
+    height: 200
+    margin-top: 6
     step: 40
     pixels-scroll: true
 
