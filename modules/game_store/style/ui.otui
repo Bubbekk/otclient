@@ -72,8 +72,18 @@ OfferPanel2 < Panel
     anchors.left: parent.left
     anchors.right: parent.right
     !text: tr('Buy')
-    font: cipsoftFont
-    image-color: #75bfff
+    height: 26
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-offset: 0 1
+    image-color: #2fd13a
+    $hover:
+      image-color: #5cff66
+    $pressed:
+      image-color: #1f9a28
+    $disabled:
+      image-color: #5a5a5a
+      color: #9a9a9a
 
   StoreFlatPanel
     id: lblPrice
@@ -96,12 +106,13 @@ stackOfferPanel < Panel
     anchors.bottom: parent.bottom
     anchors.left: parent.left
     margin: 0 5 5 0
+    font: verdana-11px-rounded
     text-align: center
     text-auto-resize: true
 
   StoreFlatPanel
     id: lblPrice
-    size: 104 20
+    size: 80 20
     anchors.bottom: parent.bottom
     anchors.right: parent.right
     margin: 0 5 5 0

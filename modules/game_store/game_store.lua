@@ -696,7 +696,7 @@ function onParseStoreCreateProducts(storeProducts)
             local coinsBalance2, coinsBalance1 = getCoinsBalance()
             local isTransferable = subOffer.coinType == GameStore.CoinType.Transferable
             local price = subOffer.price
-            local balance = isTransferable and coinsBalance1 or (coinsBalance1 + coinsBalance2)
+            local balance = coinsBalance1 + coinsBalance2 -- the server pays every offer with normal and transferable coins combined
             priceLabel:setColor(balance < price and "#d33c3c" or "white")
 
             if isTransferable then
@@ -1083,7 +1083,7 @@ function chooseOffert(self, focusedChild)
         end
 
         local isTransferable = offer.coinType == GameStore.CoinType.Transferable
-        local currentBalance = isTransferable and transferableCoins or (normalCoins + transferableCoins)
+        local currentBalance = normalCoins + transferableCoins -- the server pays every offer with both kinds combined
 
         if isTransferable then
             priceLabel:setIcon("/game_store/images/icon-tibiacointransferable")
@@ -1139,7 +1139,7 @@ function chooseOffert(self, focusedChild)
             local function acceptFunc()
                 fixServerNoSend0xF2()
                 local latestNormal, latestTransferable = getCoinsBalance()
-                local latestCurrentBalance = isTransferable and latestTransferable or (latestNormal + latestTransferable)
+                local latestCurrentBalance = latestNormal + latestTransferable
 
                 if latestCurrentBalance >= offer.price then
                     g_game.buyStoreOffer(offer.id, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_OTHER)
