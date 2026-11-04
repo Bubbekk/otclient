@@ -610,7 +610,7 @@ function Spells.aimAtTarget(words)
         return
     end
     local spell = Spells.getSpellByWords(words:match('^%s*(.-)%s*$'))
-    if not spell or not spell.group or not spell.group[1] -- attack group then
+    if not spell or not spell.group or not spell.group[1] then -- 1 = attack group
         return
     end
     local player = g_game.getLocalPlayer()
