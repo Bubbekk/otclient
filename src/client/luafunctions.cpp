@@ -899,6 +899,8 @@ void Client::registerLuaFunctions()
     g_lua.bindClassStaticFunction<Missile>("create", [] { return std::make_shared<Missile>(); });
     g_lua.bindClassMemberFunction<Missile>("setId", &Missile::setId);
     g_lua.bindClassMemberFunction<Missile>("setPath", &Missile::setPath);
+    g_lua.bindClassMemberFunction<Missile>("getSource", &Missile::getSource);
+    g_lua.bindClassMemberFunction<Missile>("getDestination", &Missile::getDestination);
 
     g_lua.registerClass<AttachedEffect>();
     g_lua.bindClassStaticFunction<AttachedEffect>("create", &AttachedEffect::create);

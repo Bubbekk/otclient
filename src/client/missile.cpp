@@ -66,6 +66,8 @@ void Missile::draw(const Point& dest, const bool drawThings, LightView* lightVie
 void Missile::setPath(const Position& fromPosition, const Position& toPosition)
 {
     m_position = fromPosition;
+    m_fromPosition = fromPosition;
+    m_toPosition = toPosition;
     m_delta = Point(toPosition.x - fromPosition.x, toPosition.y - fromPosition.y);
 
     const float deltaLength = m_delta.length();

@@ -125,7 +125,9 @@ local function alarm(file, windowText)
   end
 
   if modules.game_bot.g_app.getOs() == "windows" and config.flashClient.enabled then
-    g_window.flash()
+    if g_window.flash then
+      g_window.flash()
+    end
   end
   g_window.setTitle(player:getName() .. " - " .. windowText)
   playSound(file)

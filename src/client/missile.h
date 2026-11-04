@@ -41,6 +41,9 @@ public:
     void setDirection(Otc::Direction dir);
     auto getDirection() { return m_direction; }
 
+    const Position& getSource() const { return m_fromPosition; }
+    const Position& getDestination() const { return m_toPosition; }
+
 protected:
     ThingType* getThingType() const override;
 
@@ -54,4 +57,7 @@ private:
 
     uint8_t m_distance{ 0 };
     Otc::MagicEffectSources m_source{ Otc::ME_SOURCE_DEFAULT };
+
+    Position m_fromPosition;
+    Position m_toPosition;
 };

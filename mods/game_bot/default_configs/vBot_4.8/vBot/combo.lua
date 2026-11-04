@@ -342,7 +342,7 @@ macro(10, function()
     end
   end
   if config.enabled and config.serverEnabled and config.attack == "SERVER LEADER TARGET" and serverTarget then
-    if serverTarget and not getTarget() or (getTarget() and getTarget():getname() ~= serverTarget)
+    if serverTarget and not getTarget() or (getTarget() and getTarget():getName() ~= serverTarget:getName())
     then
       g_game.attack(serverTarget)
     end

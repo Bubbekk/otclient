@@ -4,7 +4,7 @@ local Panels = context.Panels
 Panels.MonsterEditor = function(monster, config, callback, parent)
   local otherWindow = g_ui.getRootWidget():getChildById('monsterEditor')
   if otherWindow then
-    otherWindow:destory()
+    otherWindow:destroy()
   end
 
   local window = context.setupUI([[

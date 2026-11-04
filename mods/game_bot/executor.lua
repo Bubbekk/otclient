@@ -121,7 +121,7 @@ function executeBot(config, storage, tabs, msgCallback, saveConfigCallback, relo
   context.getDistanceBetween = function(p1, p2)
     return math.max(math.abs(p1.x - p2.x), math.abs(p1.y - p2.y))
   end
-  context.isMobile = g_app.isMobile
+  context.isMobile = g_platform.isMobile or function() return false end
   context.getVersion = g_app.getVersion
 
   -- classes

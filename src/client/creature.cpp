@@ -507,6 +507,7 @@ void Creature::turn(const Otc::Direction direction)
 
     // if is not walking change the direction right away
     setDirection(direction);
+    callLuaField("onTurn", direction);
 }
 
 void Creature::walk(const Position& oldPos, const Position& newPos)

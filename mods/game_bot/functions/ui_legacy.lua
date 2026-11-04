@@ -26,7 +26,15 @@ context.importStyle = function(otml)
   if otml:find(".otui") and not otml:find("\n") then
     return g_ui.importStyle(context.configDir .. "/" .. otml)
   end
-  return g_ui.importStyleFromString(otml)
+  if g_ui.importStyleFromString then
+    return g_ui.importStyleFromString(otml)
+  end
+  -- This client can only import styles from files: write the OTML next to the config and import it
+  local file = context.configDir .. "/_inline_style_" .. tostring(g_crypt.crc32(otml, false)) .. ".otui"
+  if not g_resources.fileExists(file) then
+    g_resources.writeFileContents(file, otml)
+  end
+  return g_ui.importStyle(file)
 end
 
 context.addTab = function(name)

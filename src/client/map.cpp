@@ -198,9 +198,11 @@ void Map::addThing(const ThingPtr& thing, const Position& pos, const int16_t sta
         return;
 
     if (thing->isMissile()) {
-        m_floors[pos.z].missiles.emplace_back(thing->static_self_cast<Missile>());
+        const auto& missile = thing->static_self_cast<Missile>();
+        m_floors[pos.z].missiles.emplace_back(missile);
         thing->setPosition(pos);
         thing->onAppear();
+        g_lua.callGlobalField("g_map", "onMissle", missile);
         return;
     }
 
