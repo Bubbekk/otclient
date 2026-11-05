@@ -208,6 +208,31 @@ function init()
         WeaponProficiency:createItemCache()
     end
 
+    -- Every proficiency answer refreshes the UI, and several refresh paths ask the server again, so a
+    -- weapon change turned into ~100 requests per second and the server kicked the player (packet
+    -- limit). Send the same request at most once every 3 seconds, whoever asks for it.
+    if not WeaponProficiency.rawSendAction then
+        WeaponProficiency.rawSendAction = g_game.sendWeaponProficiencyAction
+        WeaponProficiency.sentAt = {}
+        g_game.sendWeaponProficiencyAction = function(action, itemId, ...)
+            local key = tostring(action) .. ":" .. tostring(itemId)
+            local now = g_clock.millis()
+            local last = WeaponProficiency.sentAt[key]
+            if last and now - last < 3000 then
+                return
+            end
+            if now - (WeaponProficiency.windowStart or 0) >= 1000 then
+                WeaponProficiency.windowStart, WeaponProficiency.windowCount = now, 0
+            end
+            if WeaponProficiency.windowCount >= 10 then
+                return
+            end
+            WeaponProficiency.windowCount = WeaponProficiency.windowCount + 1
+            WeaponProficiency.sentAt[key] = now
+            return WeaponProficiency.rawSendAction(action, itemId, ...)
+        end
+    end
+
     -- Connect to game events
     connect(g_game, {
         onGameStart = onGameStart,
@@ -218,6 +243,10 @@ function init()
 end
 
 function terminate()
+    if WeaponProficiency.rawSendAction then
+        g_game.sendWeaponProficiencyAction = WeaponProficiency.rawSendAction
+        WeaponProficiency.rawSendAction = nil
+    end
     disconnect(g_game, {
         onGameStart = onGameStart,
         onGameEnd = onGameEnd,
@@ -499,7 +528,15 @@ function updateTopBarProficiency()
         WeaponProficiency.currentEquippedExp = exp
         WeaponProficiency.currentEquippedMaxExp = nextLevelExp
     else
-        g_game.sendWeaponProficiencyAction(0, itemId)
+        -- The server may answer for another id (the base weapon), so the cache never fills for itemId and
+        -- every answer would trigger a new request: an endless burst that got the player kicked by the
+        -- packets-per-second limit. Ask at most once every 5 seconds per weapon.
+        WeaponProficiency.lastRequest = WeaponProficiency.lastRequest or {}
+        local now = g_clock.millis()
+        if not WeaponProficiency.lastRequest[itemId] or now - WeaponProficiency.lastRequest[itemId] > 5000 then
+            WeaponProficiency.lastRequest[itemId] = now
+            g_game.sendWeaponProficiencyAction(0, itemId)
+        end
     end
 end
 
