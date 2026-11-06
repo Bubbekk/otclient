@@ -126,7 +126,12 @@ function mapController:onGameStart()
         loadFnc = g_map.loadOtcm
     end
 
-    if g_resources.fileExists(minimapFile) then
+    -- A shipped full-map minimap replaces the per-player explored one: loading
+    -- both would overwrite whole blocks with partially explored data.
+    local fullMinimapFile = '/data/minimap_full/minimap.otmm'
+    if otmm and g_resources.fileExists(fullMinimapFile) then
+        g_minimap.loadOtmm(fullMinimapFile)
+    elseif g_resources.fileExists(minimapFile) then
         loadFnc(minimapFile)
     end
 
