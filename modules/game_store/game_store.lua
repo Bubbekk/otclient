@@ -71,7 +71,7 @@ local function esTag(text) return esTranslate("tag", text) end
 GameStore = {}
 -- == Enums ==--
 GameStore.website = {
-    WEBSITE_GETCOINS = "https://github.com/mehah/otclient",
+    WEBSITE_GETCOINS = Services and Services.getCoinsUrl or "http://rotserver.cl/coins",
     --IMAGES_URL =  "http://localhost/images/store/" --./game_store --https://docs.opentibiabr.com/opentibiabr/downloads/website-applications/applications#store-for-client-13-1
 }
 
