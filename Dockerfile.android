@@ -33,17 +33,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends gcc-multilib \
 RUN git clone --depth 1 https://github.com/LuaJIT/LuaJIT.git /otclient/luajit-src \
     && cd /otclient/luajit-src && git fetch --depth 1 origin d0e88930ddde28ff662503f9f20facf34f7265aa \
     && git checkout d0e88930ddde28ff662503f9f20facf34f7265aa
-RUN cd /otclient && chmod +x build_luajit_android.sh && ./build_luajit_android.sh
+RUN cd /otclient && sed -i 's/\r$//' build_luajit_android.sh && chmod +x build_luajit_android.sh && ./build_luajit_android.sh
 
 # Generate data.zip asset bundle
 RUN mkdir -p /otclient/android/app/src/main/assets \
     && cd /otclient && zip -r android/app/src/main/assets/data.zip data mods modules init.lua otclientrc.lua
 
-# Build APK inside the image
+# Build APK inside the image (arm64 only, limited parallelism to fit Docker Desktop memory)
+ENV VCPKG_MAX_CONCURRENCY=4 CMAKE_BUILD_PARALLEL_LEVEL=4
 RUN cd /otclient/android \
     && tr -d '\r' < gradlew > gradlew_unix \
     && chmod +x gradlew_unix \
-    && ./gradlew_unix assembleRelease
+    && ./gradlew_unix --max-workers=2 -Potclient.android.abis=arm64-v8a assembleRelease
 
 # Minimal stage to extract APK
 FROM scratch AS apk-artifacts

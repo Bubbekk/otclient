@@ -16,7 +16,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.github.otclient"
+        applicationId = "cl.rotserver.rot"
         minSdk = 21
         targetSdk = 36
         versionCode = 1
@@ -35,7 +35,11 @@ android {
                     "-DVCPKG_TARGET_ANDROID=ON",
                     "-DANDROID_STL=c++_shared",
                     "-DVCPKG_MANIFEST_INSTALL=ON",
-                    "-DVCPKG_INSTALL_OPTIONS=--allow-unsupported"
+                    "-DVCPKG_INSTALL_OPTIONS=--allow-unsupported",
+                    // Cap Ninja jobs so the native build fits in Docker Desktop memory.
+                    "-DCMAKE_JOB_POOLS=compile=4",
+                    "-DCMAKE_JOB_POOL_COMPILE=compile",
+                    "-DCMAKE_JOB_POOL_LINK=compile"
                 )
             }
         }
